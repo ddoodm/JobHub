@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
 
 <h:head>
     <meta charset="utf-8"/>
@@ -16,13 +17,15 @@
     <title>JobHub - Create Jobs, Do Jobs</title>
 
     <!-- Bootstrap LESS source -->
-    <link href="css/bootstrap/less/bootstrap.less" rel="stylesheet/less" type="text/css"/>
+    <h:outputStylesheet library="bootstrap" name="bootstrap.min.css"/>
 
     <!-- JobHub's primary LESS CSS stylesheet -->
-    <link rel="stylesheet/less" type="text/css" href="css/jobhub.less" />
+    <h:outputStylesheet name="style/jobhub.less" p:rel="stylesheet/less" p:type="text/less" />
 
     <!-- LESS CSS compiler -->
-    <script src="js/less.js" type="text/javascript"></script>
+    <h:outputScript name="js/less.js" target="body" />
+    <h:outputScript name="js/jquery-3.1.0.min.js" target="body" />
+    <h:outputScript name="js/bootstrap.min.js" target="body" />
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -32,16 +35,14 @@
 </h:head>
 
 <h:body>
-    <ui:insert name="header">
+    <ui:insert name="heading">
         <ui:include src="header.xhtml" />
     </ui:insert>
 
-    <ui:insert name="content">
-
-    </ui:insert>
-
-    <script src="js/jquery-3.1.0.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <div class="container">
+        <ui:insert name="content">
+        </ui:insert>
+    </div>
 </h:body>
 
 </html>

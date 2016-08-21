@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+<f:view>
+    <ui:composition template="common.xhtml">
+        <ui:define name="content">
+            <h:form>
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <h1>List a New Job</h1>
+                        <p>List a new job here to be completed by one of our many job specialists.</p>
+
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <h:outputLabel value="Job Title" />
+                                    <h:inputText
+                                            a:placeholder="Write a title"
+                                            styleClass="form-control"
+                                            value="#{job.description.title}"/>
+                                </div>
+
+                                <div class="form-group">
+                                    <h:outputLabel value="Job Details" />
+                                    <h:inputTextarea
+                                            a:placeholder="Write a short description"
+                                            styleClass="form-control tall-textarea"
+                                            value="#{job.description.details}"/>
+                                </div>
+
+                                <div class="form-group">
+                                    <h:outputLabel value="Payment Amount" />
+                                    <div class="input-group">
+                                        <span class="input-group-addon">$</span>
+                                        <h:inputText
+                                                a:placeholder="Write how much you'll pay"
+                                                styleClass="form-control"
+                                                value="#{job.description.payment}"/>
+                                        <span class="input-group-addon">.00</span>
+                                    </div>
+                                </div>
+
+                                <div class="btn-toolbar pull-right">
+                                    <h:commandButton value="Cancel" action="home" styleClass="btn btn-default" />
+                                    <h:commandButton value="Publish it!" action="home" styleClass="btn btn-primary" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+</f:view>
+</html>
