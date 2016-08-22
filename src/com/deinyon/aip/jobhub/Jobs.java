@@ -1,30 +1,31 @@
 package com.deinyon.aip.jobhub;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.UUID;
 
-@ManagedBean(name="jobs")
-@SessionScoped
-public class Jobs implements Serializable
+public class Jobs
 {
-    public List<Job> getJobList() {
-        return jobList;
+    private LinkedHashMap<UUID, Job> jobList = new LinkedHashMap<>();
+
+    public Collection<Job> getAllJobs() {
+        return jobList.values();
     }
 
-    public void setJobList(List<Job> jobList) {
-        this.jobList = jobList;
+    public void saveJob(Job job) {
+        job.setId(UUID.randomUUID());
+        jobList.put(job.getId(), job);
     }
 
-    private List<Job> jobList = new ArrayList<>();
+    public Job loadJob(int index) {
+        return jobList.get(index);
+    }
 
     public Jobs ()
     {
         // Set up defaults
-        jobList.add(new Job(JobDescription.CreateJobDescription("Make Toast", "Make a toast for me in Android", LocalDateTime.now().plusDays(15))));
-        jobList.add(new Job(JobDescription.CreateJobDescription("Do this thing here", "Do a thing and I'll pay you", LocalDateTime.now().plusDays(15))));
+        saveJob(new Job(JobDescription.CreateJobDescription("Make Toast", "Make a toast for me in Android", LocalDateTime.now().plusDays(15))));
+        saveJob(new Job(JobDescription.CreateJobDescription("Do this thing here", "Do a thing and I'll pay you", LocalDateTime.now().plusDays(15))));
     }
 }

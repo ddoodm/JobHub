@@ -11,7 +11,7 @@
             <h1>Find a Job</h1>
             <p>Find your ideal coding job in our vast database of job listings. Select one when you're ready.</p>
 
-            <h:dataTable value="#{jobs.jobList}" var="job"
+            <h:dataTable value="#{jobListController.allJobs}" var="job"
                          styleClass="table table-striped table-hover">
                 <h:column>
                     <f:facet name="header">Job</f:facet>

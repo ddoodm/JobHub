@@ -1,15 +1,10 @@
 package com.deinyon.aip.jobhub;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import java.io.Serializable;
 import java.util.UUID;
 
-@ManagedBean(name = "job")
-@SessionScoped
-public class Job implements Serializable
+public class Job
 {
-    private UUID ID;
+    private UUID id;
     private JobDescription description;
 
     public Job() { }
@@ -17,7 +12,6 @@ public class Job implements Serializable
     public Job(JobDescription description)
     {
         this.description = description;
-        ID = UUID.randomUUID();
     }
 
     public JobDescription getDescription() {
@@ -28,7 +22,12 @@ public class Job implements Serializable
         this.description = description;
     }
 
-    public String getId() {
-        return ID.toString();
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id)
+    {
+        this.id = id;
     }
 }
