@@ -1,13 +1,16 @@
 package com.deinyon.aip.jobhub;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class Job
+public class Job implements Serializable
 {
     private UUID id;
     private JobDescription description;
 
-    public Job() { }
+    public Job() {
+        description = new JobDescription();
+    }
 
     public Job(JobDescription description)
     {

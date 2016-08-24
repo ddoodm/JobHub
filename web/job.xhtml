@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+<f:metadata>
+    <f:viewAction action="#{viewJobController.loadJob(param.jobId)}" />
+</f:metadata>
+
+<f:view>
+    <ui:composition template="common.xhtml">
+        <ui:define name="content">
+            <h1>#{viewJobController.selectedJob.description.title}</h1>
+            <p>#{viewJobController.selectedJob.description.details}</p>
+
+            <h:form>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</f:view>
+</html>

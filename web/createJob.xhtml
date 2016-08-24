@@ -23,7 +23,7 @@
                                     <h:inputText
                                             a:placeholder="Write a title"
                                             styleClass="form-control"
-                                            value="#{job.description.title}"/>
+                                            value="#{createJobController.job.description.title}"/>
                                 </div>
 
                                 <div class="form-group">
@@ -31,7 +31,7 @@
                                     <h:inputTextarea
                                             a:placeholder="Write a short description"
                                             styleClass="form-control tall-textarea"
-                                            value="#{job.description.details}"/>
+                                            value="#{createJobController.job.description.details}"/>
                                 </div>
 
                                 <div class="form-group">
@@ -41,14 +41,17 @@
                                         <h:inputText
                                                 a:placeholder="Write how much you'll pay"
                                                 styleClass="form-control"
-                                                value="#{job.description.payment}"/>
+                                                converter="javax.faces.BigDecimal"
+                                                value="#{createJobController.job.description.payment}"/>
                                         <span class="input-group-addon">.00</span>
                                     </div>
                                 </div>
 
+                                <h:messages />
+
                                 <div class="btn-toolbar pull-right">
-                                    <h:commandButton value="Cancel" action="home" styleClass="btn btn-default" />
-                                    <h:commandButton value="Publish it!" action="home" styleClass="btn btn-primary" />
+                                    <h:button value="Cancel" outcome="jobs" styleClass="btn btn-default" />
+                                    <h:commandButton value="Publish it!" action="#{createJobController.saveJob}" styleClass="btn btn-primary" />
                                 </div>
                             </div>
                         </div>

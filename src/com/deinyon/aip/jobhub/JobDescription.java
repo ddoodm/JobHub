@@ -1,11 +1,10 @@
 package com.deinyon.aip.jobhub;
 
-import java.text.DateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Currency;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @ManagedBean(name = "jobDescription")
 @SessionScoped
@@ -19,15 +18,15 @@ public class JobDescription
             listingDate,
             targetEndDate;
 
-    public Currency getPayment() {
+    private BigDecimal payment;
+
+    public BigDecimal getPayment() {
         return payment;
     }
 
-    public void setPayment(Currency payment) {
+    public void setPayment(BigDecimal payment) {
         this.payment = payment;
     }
-
-    private Currency payment;
 
     public JobDescription() { }
 
@@ -77,6 +76,9 @@ public class JobDescription
     }
 
     public String getListingDateFormatted() {
+        if(listingDate == null)
+            return "-";
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM uuuu");
         return listingDate.format(formatter);
     }
