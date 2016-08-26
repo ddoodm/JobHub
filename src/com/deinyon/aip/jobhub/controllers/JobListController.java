@@ -17,4 +17,8 @@ public class JobListController implements Serializable
     public Collection<Job> getAllJobs() {
         return jobs.getAllJobs();
     }
+
+    public boolean isJobsExist() {
+        return getAllJobs().size() > 0;
+    }
 }

@@ -20,6 +20,7 @@ public class CreateJobController implements Serializable
 
     public String saveJob()
     {
+        job.prepare();
         JobsDatabaseInMemory.create(job);
         return "jobs?faces-redirect=true";
     }

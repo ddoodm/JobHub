@@ -4,31 +4,56 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 <f:view>
     <ui:composition template="common.xhtml">
         <ui:define name="content">
-            <h1>Find a Job</h1>
-            <p>Find your ideal coding job in our vast database of job listings. Select one when you're ready.</p>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <h1>Find a Job</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <p>Find your ideal coding job in our vast database of job listings. Select one when you're ready.</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <h:inputText styleClass="form-control" a:placeholder="Search Jobs" />
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">Search</button>
+                       </span>
+                    </div>
+                </div>
+            </div>
+
+            <hr />
 
             <h:form>
                 <h:dataTable value="#{jobListController.allJobs}" var="job"
-                                             styleClass="table table-striped table-hover">
-                <h:column>
-                    <f:facet name="header">Job</f:facet>
-                    <h:link value="#{job.description.title}" outcome="job">
-                        <f:param name="jobId" value="#{job.id}" converter="uuid"/>
-                    </h:link>
-                </h:column>
-                <h:column>
-                    <f:facet name="header">Created</f:facet>
-                    <h:outputText value="#{job.description.listingDateFormatted}" />
-                </h:column>
-                <h:column>
-                    <f:facet name="header">To Be Completed</f:facet>
-                    <h:outputText value="#{job.description.targetEndDate}" />
-                </h:column>
-            </h:dataTable>
+                             styleClass="table table-striped table-hover"
+                             rendered="#{jobListController.jobsExist}">
+                    <h:column>
+                        <f:facet name="header">Job</f:facet>
+                        <h:link value="#{job.description.title}" outcome="job">
+                            <f:param name="jobId" value="#{job.id}" converter="uuid"/>
+                        </h:link>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Created</f:facet>
+                        <h:outputText value="#{job.description.listingDateFormatted}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">To Be Completed</f:facet>
+                        <h:outputText value="#{job.description.targetEndDate}" />
+                    </h:column>
+                </h:dataTable>
+
+                <ui:fragment rendered="#{! jobListController.jobsExist}">
+                    <h3 class="text-center">There are no jobs here... yet.</h3>
+                </ui:fragment>
             </h:form>
         </ui:define>
     </ui:composition>
