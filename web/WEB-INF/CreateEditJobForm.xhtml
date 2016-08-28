@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+    <f:view>
+        <ui:composition>
+
+            <div class="form-group">
+                <h:outputLabel value="Job Title" styleClass="pull-left" />
+                <h:message for="title"  styleClass="pull-right error" />
+                <h:inputText
+                    id="title"
+                    a:placeholder="Write a title"
+                    styleClass="form-control"
+                    value="#{createJobController.job.description.title}"/>
+            </div>
+
+            <div class="form-group">
+                <h:outputLabel value="To Be Completed" />
+                <h:message for="dueDate"  styleClass="pull-right error" />
+                <h:inputText
+                    id="dueDate"
+                    a:placeholder="Write when you want the job done"
+                    styleClass="form-control datepicker"
+                    value="#{createJobController.job.description.targetEndDate}">
+                    <f:convertDateTime pattern="d MMMM yyyy" />
+                </h:inputText>
+            </div>
+
+            <div class="form-group">
+                <h:outputLabel value="Payment Amount" />
+                <h:message for="payment"  styleClass="pull-right error" />
+                <div class="input-group">
+                    <span class="input-group-addon">$</span>
+                    <h:inputText
+                        id="payment"
+                        a:placeholder="Write how much you'll pay"
+                        styleClass="form-control"
+                        converter="javax.faces.BigDecimal"
+                        value="#{createJobController.job.description.payment}"/>
+                    <span class="input-group-addon">.00</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <h:outputLabel value="Job Details" />
+                <h:message for="details"  styleClass="pull-right error" />
+                <h:inputTextarea
+                    id="details"
+                    a:placeholder="Write a short description"
+                    styleClass="form-control tall-textarea"
+                    value="#{createJobController.job.description.details}"/>
+            </div>
+
+            <hr />
+
+            <div class="form-group">
+                <h:outputLabel value="Attach a File" />
+                <p>You can optionally attach a file to provide to your contractor.</p>
+                <div class="input-group">
+                    <label class="input-group-btn">
+                        <span class="btn btn-primary">
+                            Browse <input type="file" id="uploadFile" style="display: none;" />
+                        </span>
+                    </label>
+                    <input type="text" id="uploadFileFeedback" class="form-control" readonly="" />
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="btn-toolbar pull-right">
+                <h:button value="Cancel" outcome="jobs" styleClass="btn btn-default" />
+                <h:commandButton
+                    value="Publish it!"
+                    action="#{createJobController.saveJob}"
+                    styleClass="btn btn-primary" />
+            </div>
+        </ui:composition>
+    </f:view>
+</html>

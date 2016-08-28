@@ -9,112 +9,24 @@
     <f:view>
         <ui:composition template="common.xhtml">
             <ui:define name="content">
-                <h:form id="createJobForm" enctype="multipart/form-data">
-                    <div class="container">
-                        <h1>List a New Job</h1>
-                        <p>List a new job here to be completed by one of our many job specialists.</p>
 
+                <div class="container">
+                    <h1>List a New Job</h1>
+                    <p>List a new job here to be completed by one of our many job specialists.</p>
+
+                    <h:form id="createEditJobForm" enctype="multipart/form-data">
                         <div class="panel panel-default">
                             <div class="panel-body">
-                                <div class="form-group">
-                                    <h:outputLabel value="Job Title" styleClass="pull-left" />
-                                    <h:message for="title"  styleClass="pull-right error" />
-                                    <h:inputText
-                                        id="title"
-                                        a:placeholder="Write a title"
-                                        styleClass="form-control"
-                                        value="#{createJobController.job.description.title}"/>
-                                </div>
-
-                                <div class="form-group">
-                                    <h:outputLabel value="To Be Completed" />
-                                    <h:message for="dueDate"  styleClass="pull-right error" />
-                                    <h:inputText
-                                        id="dueDate"
-                                        a:placeholder="Write when you want the job done"
-                                        styleClass="form-control datepicker"
-                                        value="#{createJobController.job.description.targetEndDate}">
-                                        <f:convertDateTime pattern="d MMMM yyyy" />
-                                    </h:inputText>
-                                </div>
-
-                                <div class="form-group">
-                                    <h:outputLabel value="Payment Amount" />
-                                    <h:message for="payment"  styleClass="pull-right error" />
-                                    <div class="input-group">
-                                        <span class="input-group-addon">$</span>
-                                        <h:inputText
-                                            id="payment"
-                                            a:placeholder="Write how much you'll pay"
-                                            styleClass="form-control"
-                                            converter="javax.faces.BigDecimal"
-                                            value="#{createJobController.job.description.payment}"/>
-                                        <span class="input-group-addon">.00</span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <h:outputLabel value="Job Details" />
-                                    <h:message for="details"  styleClass="pull-right error" />
-                                    <h:inputTextarea
-                                        id="details"
-                                        a:placeholder="Write a short description"
-                                        styleClass="form-control tall-textarea"
-                                        value="#{createJobController.job.description.details}"/>
-                                </div>
-
-                                <hr />
-
-                                <div class="form-group">
-                                    <h:outputLabel value="Attach a File" />
-                                    <p>You can optionally attach a file to provide to your contractor.</p>
-                                    <div class="input-group">
-                                        <label class="input-group-btn">
-                                            <span class="btn btn-primary">
-                                                Browse <input type="file" id="uploadFile" style="display: none;" />
-                                            </span>
-                                        </label>
-                                        <input type="text" id="uploadFileFeedback" class="form-control" readonly="" />
-                                    </div>
-                                </div>
-                                
-                                <hr />
-
-                                <div class="btn-toolbar pull-right">
-                                    <h:button value="Cancel" outcome="jobs" styleClass="btn btn-default" />
-                                    <h:commandButton
-                                        value="Publish it!"
-                                        action="#{createJobController.saveJob}"
-                                        styleClass="btn btn-primary" />
-                                </div>
+                                <ui:include src="WEB-INF/CreateEditJobForm.xhtml" />
                             </div>
                         </div>
-
-                    </div>
-                </h:form>
+                    </h:form>
+                </div>
 
             </ui:define>
 
             <ui:define name="scripts">
-                <script type="text/javascript">
-                    $(document).ready(function ()
-                    {
-                        $(".datepicker").datepicker({
-                            format: "d MM yyyy",
-                            startDate: "today",
-                            todayBtn: "linked",
-                            orientation: "bottom auto",
-                            todayHighlight: true
-                        });
-                    });
-                    
-                    // Auto-update file-picker path
-                    $("#createJobForm").on('change', '#uploadFile', function()
-                    {
-                        var filePath = $("#uploadFile").val();
-                        $("#uploadFileFeedback").val(filePath);
-                    });
-                </script>
+                <script type="text/javascript" src="resources/scripts/createEditJobFormHelper.js" />
             </ui:define>
         </ui:composition>
     </f:view>

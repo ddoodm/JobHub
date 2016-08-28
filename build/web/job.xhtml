@@ -14,20 +14,83 @@
     <f:view>
         <ui:composition template="common.xhtml">
             <ui:define name="content">
-                <div class="container-fluid">
-                    <div class="jumbotron jobhub-jumbo job-detail-jumbo">
-                        <div class="container">
-                            <h1>#{viewJobController.selectedJob.description.title}</h1>
-                            <p>Created by Test Systems Inc</p>
+                <ui:fragment rendered="#{not empty viewJobController.selectedJob}">
+                    <div class="container-fluid">
+                        <div class="jumbotron jobhub-jumbo job-detail-jumbo">
+                            <div class="container">
+                                <h1>#{viewJobController.selectedJob.description.title}</h1>
+                                <p>Created by Test Systems Inc</p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="container">
-                    <h:form>
+                    <div class="container">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class='col-sm-6'>
+                                        <h2>About the Job</h2>
+                                    </div>
+                                    <div class='col-sm-6'>
+                                        <h:button outcome="editJob" value="Edit this Job" styleClass="btn pull-right">
+                                            <f:param name="jobId" value="#{viewJobController.selectedJob.id}" />
+                                        </h:button>
+                                    </div>
+                                </div>
 
-                    </h:form>
-                </div>
+                                <hr />
+
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <h4>Description</h4>
+                                        <p><h:outputText value="#{viewJobController.selectedJob.description.details}" /></p>
+                                    </div>
+
+                                    <div class="col-md-5">
+                                        <h4>Details</h4>
+                                        <table class="table table-striped">
+                                            <tr>
+                                                <th>Listed</th>
+                                                <td>
+                                                    <h:outputText value="#{viewJobController.selectedJob.description.listingDate}">
+                                                        <f:convertDateTime dateStyle="full" />
+                                                    </h:outputText>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Due Date</th>
+                                                <td>
+                                                    <h:outputText value="#{viewJobController.selectedJob.description.targetEndDate}">
+                                                        <f:convertDateTime dateStyle="full" />
+                                                    </h:outputText>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Payment</th>
+                                                <td>
+                                                    <h:outputText value="#{viewJobController.selectedJob.description.payment}">
+                                                        <f:convertNumber type="currency" currencySymbol="$" />
+                                                    </h:outputText>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <ui:fragment>
+                                    <hr />
+                                    <button type="button" class="btn-lg btn-primary center-block">Take the Job</button>
+                                </ui:fragment>
+
+                            </div>
+                        </div>
+                    </div>
+                </ui:fragment>
+                <ui:fragment rendered="#{empty viewJobController.selectedJob}">
+                    <div class="container">
+                        <h1>404: Job Not Found</h1>
+                    </div>
+                </ui:fragment>
             </ui:define>
         </ui:composition>
     </f:view>

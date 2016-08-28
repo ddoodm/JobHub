@@ -15,8 +15,16 @@ public class ViewJobController
 
     public void loadJob(String jobIdString)
     {
-        UUID jobUuid = UUID.fromString(jobIdString);
-        this.selectedJob = JobsDatabaseInMemory.read(jobUuid);
+        try
+        {
+            UUID jobUuid = UUID.fromString(jobIdString);
+            this.selectedJob = JobsDatabaseInMemory.read(jobUuid);
+        }
+        catch (IllegalArgumentException e)
+        {
+            // Handles cases where the Job ID string is null or invalid
+            this.selectedJob = null;
+        }
     }
 
     public Job getSelectedJob()

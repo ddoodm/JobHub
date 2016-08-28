@@ -9,9 +9,11 @@ public class Job implements Serializable
 {
     private UUID id;
     private JobDescription description;
+    private JobStatus status;
 
     public Job() {
         description = new JobDescription();
+        status = JobStatus.PROPOSED;
     }
 
     /**
@@ -36,6 +38,14 @@ public class Job implements Serializable
 
     public void setDescription(JobDescription description) {
         this.description = description;
+    }
+    
+    public JobStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(JobStatus status) {
+        this.status = status;
     }
 
     public UUID getId() {

@@ -22,20 +22,22 @@ public class JobDescription implements Serializable
 
     public JobDescription() { }
 
-    public JobDescription(String title, String details, Date listingDate, Date targetEndDate) {
+    public JobDescription(String title, String details, BigDecimal payment, Date listingDate, Date targetEndDate) {
         this.title = title;
         this.details = details;
+        this.payment = payment;
         this.listingDate = listingDate;
         this.targetEndDate = targetEndDate;
     }
 
-    public static JobDescription CreateJobDescription(String title, String details, Date targetEndDate)
+    public static JobDescription CreateJobDescription(String title, String details, BigDecimal payment, Date targetEndDate)
     {
         Date listingDate = new Date();
-        return new JobDescription(title, details, listingDate, targetEndDate);
+        return new JobDescription(title, details, payment, listingDate, targetEndDate);
     }
 
     @NotEmpty(message = "Please enter a title for your job")
+    @Length(min = 3, max = 120, message = "Please enter a meaningful title below 120 characters")
     public String getTitle() {
         return title;
     }
@@ -74,13 +76,5 @@ public class JobDescription implements Serializable
     }
     public void setPayment(BigDecimal payment) {
         this.payment = payment;
-    }
-
-    public String getListingDateFormatted() {
-        if(listingDate == null)
-            return "-";
-
-        SimpleDateFormat formatter = new SimpleDateFormat("d MMMM uuuu");
-        return formatter.format(listingDate);
     }
 }
