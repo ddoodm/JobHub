@@ -6,6 +6,12 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+    
+        <!-- The Job Controller is session-scoped, so we must use a new job-->
+    <f:metadata>
+        <f:viewAction action="#{jobController.prepareNewJob}" />
+    </f:metadata>
+    
     <f:view>
         <ui:composition template="common.xhtml">
             <ui:define name="content">
@@ -18,6 +24,16 @@
                         <div class="panel panel-default">
                             <div class="panel-body">
                                 <ui:include src="WEB-INF/CreateEditJobForm.xhtml" />
+
+                                <hr />
+
+                                <div class="btn-toolbar pull-right">
+                                    <h:button value="Cancel" outcome="jobs" styleClass="btn btn-default" />
+                                    <h:commandButton
+                                        value="Publish it!"
+                                        action="#{jobController.saveJob}"
+                                        styleClass="btn btn-primary" />
+                                </div>
                             </div>
                         </div>
                     </h:form>

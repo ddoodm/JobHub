@@ -9,9 +9,17 @@
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
+    <servlet>
+        <servlet-name>AttachmentFileServlet</servlet-name>
+        <servlet-class>com.deinyon.aip.jobhub.servlets.AttachmentFileServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AttachmentFileServlet</servlet-name>
+        <url-pattern>/attachments</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
@@ -21,4 +29,10 @@
     <welcome-file-list>
         <welcome-file>home.xhtml</welcome-file>
     </welcome-file-list>
+    
+    <!-- The directory on this machine where users' attachments will be stored -->
+    <context-param>
+        <param-name>jobAttachmentBasePath</param-name>
+        <param-value>D:\JobHubStore\</param-value>
+    </context-param>
 </web-app>

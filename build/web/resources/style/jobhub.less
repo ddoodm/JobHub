@@ -4,32 +4,32 @@
 
 body
 {
-  padding-top: 70px;
+    padding-top: 70px;
 }
 
 .navbar-brand
 {
-  padding: 5px 15px 5px 15px;
+    padding: 5px 15px 5px 15px;
 }
 
 .mid-fade-text
 {
-  text-align: center;
-  vertical-align: middle;
-  padding-top: 6px;
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 6px;
 
-  color: @gray-lighter;
+    color: @gray-lighter;
 }
 
 .jumbotron p
 {
-  color: #707070;
-  font-size: 12pt;
+    color: #707070;
+    font-size: 12pt;
 }
 
 .tall-textarea
 {
-  min-height: 100pt;
+    min-height: 100pt;
 }
 
 .container-fluid
@@ -42,7 +42,7 @@ body
 {
     background: linear-gradient(#111c3b, #0d3879);
     border-radius: 0 !important;
-    
+
     &, p {
         color: #FFF;
     }
@@ -51,11 +51,11 @@ body
 .job-detail-jumbo
 {
     padding: 5px;
-    
+
     * {
         margin: 4px inherit 4px inherit;
     }
-    
+
     h1 {
         text-shadow: 4px 4px 8px fade(#222, 98%);
     }
@@ -64,11 +64,11 @@ body
 .btn-primary
 {
     background-color: @brand-secondary;
-    
+
     &, &:hover {
         border: 1px solid spin(darken(@brand-secondary, 5%), -5%);
     }
-    
+
     &:hover {
         background-color: spin(darken(@brand-secondary, 5%), -5%);
     }
@@ -80,7 +80,42 @@ body
     }
 }
 
+input.error
+{
+    color: inherit;
+    background: #FFEEEE;
+    border: 1px solid red;
+    
+    transition: 0.5s;
+}
+
 .error
 {
     color: #EE1100;
+}
+
+.inline-radio-buttons
+{
+    @radio-size: 32px;
+    @label-size: 18px;
+    
+    display: inline;
+    
+    td {
+        padding: 8px;
+        
+        label {
+            font-weight: normal;
+            font-size: @label-size;
+            
+            position: relative;
+            top: (@label-size - @radio-size) / 2.0;
+        }
+        
+        input[type="radio"] {
+            width: @radio-size;
+            height: @radio-size;
+            margin: 5px;
+        }
+    }
 }

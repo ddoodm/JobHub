@@ -42,6 +42,11 @@ public class JobsDatabaseInMemory
         jobMap.remove(job.getId());
         jobMap.put(job.getId(), job);
     }
+    
+    public static synchronized void delete(Job job)
+    {
+        jobMap.remove(job.getId());
+    }
 
     /**
      * Seeds the in-memory database with sample data

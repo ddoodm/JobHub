@@ -19,6 +19,8 @@ public class JobDescription implements Serializable
             targetEndDate;
 
     private BigDecimal payment;
+    
+    private String attachmentFilePath;
 
     public JobDescription() { }
 
@@ -76,5 +78,13 @@ public class JobDescription implements Serializable
     }
     public void setPayment(BigDecimal payment) {
         this.payment = payment;
+    }
+
+    public String getAttachmentFilePath() {
+        return attachmentFilePath;
+    }
+
+    public void setAttachmentFilePath(String attachmentFilePath) {
+        this.attachmentFilePath = attachmentFilePath;
     }
 }

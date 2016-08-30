@@ -16,7 +16,7 @@
                     id="title"
                     a:placeholder="Write a title"
                     styleClass="form-control"
-                    value="#{createJobController.job.description.title}"/>
+                    value="#{jobController.job.description.title}"/>
             </div>
 
             <div class="form-group">
@@ -26,7 +26,7 @@
                     id="dueDate"
                     a:placeholder="Write when you want the job done"
                     styleClass="form-control datepicker"
-                    value="#{createJobController.job.description.targetEndDate}">
+                    value="#{jobController.job.description.targetEndDate}">
                     <f:convertDateTime pattern="d MMMM yyyy" />
                 </h:inputText>
             </div>
@@ -41,7 +41,7 @@
                         a:placeholder="Write how much you'll pay"
                         styleClass="form-control"
                         converter="javax.faces.BigDecimal"
-                        value="#{createJobController.job.description.payment}"/>
+                        value="#{jobController.job.description.payment}"/>
                     <span class="input-group-addon">.00</span>
                 </div>
             </div>
@@ -53,7 +53,7 @@
                     id="details"
                     a:placeholder="Write a short description"
                     styleClass="form-control tall-textarea"
-                    value="#{createJobController.job.description.details}"/>
+                    value="#{jobController.job.description.details}"/>
             </div>
 
             <hr />
@@ -64,21 +64,11 @@
                 <div class="input-group">
                     <label class="input-group-btn">
                         <span class="btn btn-primary">
-                            Browse <input type="file" id="uploadFile" style="display: none;" />
+                            Browse <h:inputFile value="#{jobController.attachment}" id="uploadFile" style="display: none;" />
                         </span>
                     </label>
                     <input type="text" id="uploadFileFeedback" class="form-control" readonly="" />
                 </div>
-            </div>
-
-            <hr />
-
-            <div class="btn-toolbar pull-right">
-                <h:button value="Cancel" outcome="jobs" styleClass="btn btn-default" />
-                <h:commandButton
-                    value="Publish it!"
-                    action="#{createJobController.saveJob}"
-                    styleClass="btn btn-primary" />
             </div>
         </ui:composition>
     </f:view>
