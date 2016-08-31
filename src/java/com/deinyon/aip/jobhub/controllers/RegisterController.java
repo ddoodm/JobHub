@@ -14,10 +14,35 @@ import javax.faces.bean.RequestScoped;
 @RequestScoped
 public class RegisterController implements Serializable
 {
-    private User user;
+    private User user = new User();
+    
+    public void signUp()
+    {
+        
+    }
     
     public User getUser()
     {
         return user;
+    }
+    
+    public String getUserType()
+    {
+        return "";
+    }
+    
+    public void setUserType(String userType)
+    {
+        
+    }
+    
+    public String getPlaintextPassword()
+    {
+        return "";
+    }
+    
+    public void setPlaintextPassword(String plaintextPassword)
+    {
+        
     }
 }

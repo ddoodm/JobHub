@@ -29,8 +29,12 @@
                     </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><h:link outcome="register">Register</h:link></li>
-                    <li><a href="#">Log in</a></li>
+                    <li class="#{view.viewId eq '/register.xhtml' ? 'active' : ''}">
+                        <h:link outcome="register" >Register</h:link>
+                    </li>
+                    <li class="#{view.viewId eq '/login.xhtml' ? 'active' : ''}">
+                        <h:link>Log In</h:link>
+                    </li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>

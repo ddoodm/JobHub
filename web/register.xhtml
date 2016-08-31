@@ -6,12 +6,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
-
-    <!-- The Job Controller is session-scoped, so we must use a new job-->
-    <f:metadata>
-        <f:viewAction action="#{jobController.prepareNewJob}" />
-    </f:metadata>
-
+    
     <f:view>
         <ui:composition template="common.xhtml">
             <ui:define name="content">
@@ -33,7 +28,7 @@
                                         id="username"
                                         a:placeholder="Pick a username"
                                         styleClass="form-control"
-                                        value=""/>
+                                        value="#{registerController.user.username}"/>
                                 </div>
 
                                 <div class="form-group">
@@ -43,7 +38,7 @@
                                         id="email"
                                         a:placeholder="Write your E-Mail address"
                                         styleClass="form-control"
-                                        value=""/>
+                                        value="#{registerController.user.email}"/>
                                 </div>
 
                                 <div class="form-group">
@@ -53,7 +48,7 @@
                                         id="password"
                                         a:placeholder="Write a password"
                                         styleClass="form-control"
-                                        value=""/>
+                                        value="#{registerController.plaintextPassword}"/>
                                 </div>
 
                                 <div class="form-group">
@@ -61,13 +56,12 @@
                                     <h:inputSecret
                                         id="passwordConfirm"
                                         a:placeholder="Re-type your password for confirmation"
-                                        styleClass="form-control"
-                                        value=""/>
+                                        styleClass="form-control"/>
                                 </div>
 
                                 <hr />
                                 <h2>Account Type</h2>
-                                <h:selectOneRadio styleClass="inline-radio-buttons">
+                                <h:selectOneRadio styleClass="inline-radio-buttons" value="#{registerController.userType}">
                                     <f:selectItem itemValue="Employee" itemLabel="Employee" />
                                     <f:selectItem itemValue="Employer" itemLabel="Employer" />
                                 </h:selectOneRadio>
@@ -90,7 +84,7 @@
                                                 id="givenName"
                                                 a:placeholder="Your first name"
                                                 styleClass="form-control"
-                                                value=""/>
+                                                value="#{registerController.user.givenName}"/>
                                         </div>
                                         <div class="col-md-6">
                                             <h:message for="surname"  styleClass="pull-right error" />
@@ -98,7 +92,7 @@
                                                 id="surname"
                                                 a:placeholder="Your surname"
                                                 styleClass="form-control"
-                                                value=""/>
+                                                value="#{registerController.user.surname}"/>
                                         </div>
                                     </div>
 
@@ -111,7 +105,7 @@
                                         id="company"
                                         a:placeholder="Write your company name (optional)"
                                         styleClass="form-control"
-                                        value=""/>
+                                        value="#{registerController.user.company}"/>
                                 </div>
 
                                 <hr />
@@ -119,8 +113,9 @@
                                 <div class="btn-toolbar pull-right">
                                     <h:button value="Cancel" outcome="home" styleClass="btn btn-default" />
                                     <h:commandButton
+                                        id="registerButton"
                                         value="Sign Up"
-
+                                        action="#{registerController.signUp}"
                                         styleClass="btn btn-primary" />
                                 </div>
 
@@ -145,7 +140,11 @@
                         var password = passwordField.val();
                         var passwordConfirmed = passwordConfirmField.val();
                         var confirmationMatches = password === passwordConfirmed;
-
+                        
+                        // Configure submit button
+                        $("#registerForm\\:registerButton").prop("disabled", !confirmationMatches);
+                        
+                        // Error styling
                         if (confirmationMatches)
                             passwordConfirmField.removeClass("error");
                         else
