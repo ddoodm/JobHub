@@ -12,7 +12,6 @@ CREATE TABLE Users(
   first_name      VARCHAR(255),
   last_name       VARCHAR(255),
   email           VARCHAR(512),
-  phone           VARCHAR(64),
   company         VARCHAR(255),
   biography       LONG VARCHAR
 
@@ -31,13 +30,13 @@ CREATE TABLE Employees(
 
 ------ Jobs ------
 CREATE TABLE JobDescriptions (
-  description_id  VARCHAR(64)         NOT NULL PRIMARY KEY,
+  description_id  VARCHAR(64)     NOT NULL PRIMARY KEY,
   title           VARCHAR(255)    NOT NULL,
   details         LONG VARCHAR,
   listing_date    DATE            NOT NULL,
   end_date        DATE,
   payment         DOUBLE          NOT NULL,
-  attachment_id   VARCHAR(64)         NOT NULL,
+  attachment_id   VARCHAR(64),
 
   FOREIGN KEY (attachment_id) REFERENCES Attachments(attachment_id)
 );

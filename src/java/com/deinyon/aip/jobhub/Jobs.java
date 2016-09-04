@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class Jobs
 {
-    private static final JobsDatabaseInMemory database = new JobsDatabaseInMemory();
+    private Collection<Job> jobs;
 
     public Collection<Job> getAllJobs() {
         return database.loadAllJobs();

@@ -5,11 +5,14 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.UUID;
 import javax.validation.constraints.*;
 import org.hibernate.validator.constraints.*;
 
 public class JobDescription implements Serializable
 {
+    private UUID id;
+    
     private String title;
 
     private String details;
@@ -24,7 +27,8 @@ public class JobDescription implements Serializable
 
     public JobDescription() { }
 
-    public JobDescription(String title, String details, BigDecimal payment, Date listingDate, Date targetEndDate) {
+    public JobDescription(UUID id, String title, String details, BigDecimal payment, Date listingDate, Date targetEndDate) {
+        this.id = id;
         this.title = title;
         this.details = details;
         this.payment = payment;
@@ -35,7 +39,8 @@ public class JobDescription implements Serializable
     public static JobDescription CreateJobDescription(String title, String details, BigDecimal payment, Date targetEndDate)
     {
         Date listingDate = new Date();
-        return new JobDescription(title, details, payment, listingDate, targetEndDate);
+        UUID id = UUID.randomUUID();
+        return new JobDescription(id, title, details, payment, listingDate, targetEndDate);
     }
 
     @NotEmpty(message = "Please enter a title for your job")

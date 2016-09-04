@@ -6,26 +6,43 @@
 package com.deinyon.aip.jobhub.controllers;
 
 import com.deinyon.aip.jobhub.Job;
+import com.deinyon.aip.jobhub.database.JobDAO;
 import com.deinyon.aip.jobhub.database.JobsDatabaseInMemory;
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.UUID;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.http.Part;
+import javax.sql.DataSource;
 
 @SessionScoped
 @ManagedBean(name = "jobController")
 public class JobController implements Serializable
 {
+    private DataSource dataSource;
     private Job job;
+    
+    public JobController() throws NamingException
+    {
+        this.dataSource = (DataSource)InitialContext.doLookup("jdbc/jobhub");
+    }
 
-    public void loadJob(String jobIdString)
+    public void loadJob(String jobIdString) throws SQLException
     {
         try
         {
             UUID jobUuid = UUID.fromString(jobIdString);
-            this.job = JobsDatabaseInMemory.read(jobUuid);
+            
+            try(Connection conn = dataSource.getConnection())
+            {
+                JobDAO jobDao = new JobDAO(conn);
+                this.job = jobDao.find(jobUuid);
+            }
         }
         catch (IllegalArgumentException e)
         {

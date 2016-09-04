@@ -15,6 +15,13 @@ public class Job implements Serializable
         description = new JobDescription();
         status = JobStatus.PROPOSED;
     }
+    
+    public Job(UUID id, JobDescription description, JobStatus status)
+    {
+        this.id = id;
+        this.description = description;
+        this.status = status;
+    }
 
     /**
      * Called when the job's details have been written,
