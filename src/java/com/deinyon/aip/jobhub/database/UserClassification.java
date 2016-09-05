@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.deinyon.aip.jobhub;
+package com.deinyon.aip.jobhub.database;
 
-public enum JobStatus {
-    Proposed, Approved, Completed, Cancelled
+public enum UserClassification
+{
+    Employee, Employer, Unknown
 }

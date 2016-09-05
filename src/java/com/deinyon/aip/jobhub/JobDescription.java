@@ -42,6 +42,19 @@ public class JobDescription implements Serializable
         UUID id = UUID.randomUUID();
         return new JobDescription(id, title, details, payment, listingDate, targetEndDate);
     }
+    
+    public void prepare()
+    {
+        // Generate a new ID
+        this.id = UUID.randomUUID();
+        
+        // Set the job's listing date to now
+        setListingDate(new Date());
+    }
+    
+    public UUID getId() {
+        return id;
+    }
 
     @NotEmpty(message = "Please enter a title for your job")
     @Length(min = 3, max = 120, message = "Please enter a meaningful title below 120 characters")

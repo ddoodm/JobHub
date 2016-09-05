@@ -9,23 +9,12 @@ CREATE TABLE Attachments(
 ------ Users ------
 CREATE TABLE Users(
   user_id         VARCHAR(64)         NOT NULL PRIMARY KEY,
+  classifier      VARCHAR(64)         NOT NULL,
   first_name      VARCHAR(255),
   last_name       VARCHAR(255),
   email           VARCHAR(512),
   company         VARCHAR(255),
   biography       LONG VARCHAR
-
-  -- Has many conversations
-);
-
-CREATE TABLE Employers(
-  user_id         VARCHAR(64)         NOT NULL PRIMARY KEY,
-  FOREIGN KEY (user_id) REFERENCES Users(user_id)
-);
-
-CREATE TABLE Employees(
-  user_id         VARCHAR(64)         NOT NULL PRIMARY KEY,
-  FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
 ------ Jobs ------
@@ -46,11 +35,15 @@ CREATE TABLE Jobs (
   employer_id     VARCHAR(64)   NOT NULL,
   employee_id     VARCHAR(64),
   description_id  VARCHAR(64)   NOT NULL,
-  state           SMALLINT  NOT NULL,
+  state           VARCHAR(64)   NOT NULL,
 
-  FOREIGN KEY (employee_id) REFERENCES Employees(user_id),
-  FOREIGN KEY (employer_id) REFERENCES Employers(user_id),
-  FOREIGN KEY (description_id) REFERENCES JobDescriptions(description_id)
+  FOREIGN KEY (employee_id) REFERENCES Users(user_id),
+  FOREIGN KEY (employer_id) REFERENCES Users(user_id),
+  
+  CONSTRAINT fk_description
+    FOREIGN KEY (description_id)
+    REFERENCES JobDescriptions(description_id)
+    ON DELETE CASCADE
 );
 
 CREATE TABLE JobPayloads (

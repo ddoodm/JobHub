@@ -5,6 +5,7 @@
  */
 package com.deinyon.aip.jobhub;
 
-public enum JobStatus {
-    Proposed, Approved, Completed, Cancelled
+public class Configuration
+{
+    public static final String DATABASE_RESOURCE_NAME = "jdbc/jobhub";
 }

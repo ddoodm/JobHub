@@ -5,21 +5,51 @@
  */
 package com.deinyon.aip.jobhub.database;
 
+import com.deinyon.aip.jobhub.Configuration;
 import com.deinyon.aip.jobhub.Job;
 import com.deinyon.aip.jobhub.JobDescription;
 import com.deinyon.aip.jobhub.JobStatus;
+import com.deinyon.aip.jobhub.users.Employee;
+import com.deinyon.aip.jobhub.users.Employer;
+import com.deinyon.aip.jobhub.users.User;
+import com.deinyon.aip.jobhub.util.SqlDateConverter;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 
-public class JobDAO implements ResourceDAO<Job>
+public class JobDAO implements ResourceDAO<UUID, Job>
 {
     private Connection connection;
     
-    public JobDAO(Connection connection)
+    public JobDAO() throws IOException
     {
-        this.connection = connection;
+        try
+        {
+            DataSource dataSource = (DataSource)InitialContext.doLookup(Configuration.DATABASE_RESOURCE_NAME);
+            this.connection = dataSource.getConnection();
+        }
+        catch(SQLException | NamingException ex)
+        {
+            throw new IOException("A database error prevented the DAO from initializing.", ex);
+        }
+    }
+    
+    private <T extends User> T loadUser(String username, Class<T> type) throws IOException
+    {
+        // We wish to recycle the current connection, so we do not close the new DAO
+        UserDAO userDao = new UserDAO(connection);
+        
+        if(type == Employee.class)
+            return (T)userDao.findEmployee(username);
+        if(type == Employer.class)
+            return (T)userDao.findEmployer(username);
+        
+        return null;
     }
     
     /**
@@ -32,16 +62,16 @@ public class JobDAO implements ResourceDAO<Job>
      * @throws SQLException 
      */
     private Job buildJobFromRow(UUID jobId, ResultSet row)
-            throws SQLException
+            throws SQLException, IOException
     {
         // Build the UUID from a UUID string
         UUID descriptionId = UUID.fromString(row.getString("description_id"));
 
         // Validate state enum value
-        int stateId = row.getInt("state");
-        if(stateId > JobStatus.values().length)
-            throw new IllegalArgumentException("Job 'status' is not a valid JobStatus status.");
-        JobStatus jobStatus = JobStatus.values()[stateId];
+        JobStatus jobStatus = JobStatus.valueOf(row.getString("state"));
+        
+        // Load required Employer
+        Employer employer = loadUser(row.getString("employer_id"), Employer.class);
 
         // Create the DTO(s)
         JobDescription jobDesc = new JobDescription(
@@ -52,7 +82,12 @@ public class JobDAO implements ResourceDAO<Job>
                 row.getDate("listing_date"),
                 row.getDate("end_date")
             );
-        return new Job(jobId, jobDesc, jobStatus);
+        Job job = new Job(jobId, employer, jobDesc, jobStatus);
+        
+        // Load relation IDs
+        job.setEmployee(loadUser(row.getString("employee_id"), Employee.class));
+        
+        return job;
     }
     
     /**
@@ -64,19 +99,98 @@ public class JobDAO implements ResourceDAO<Job>
      * @throws SQLException 
      */
     private Job buildJobFromRow(ResultSet row)
-            throws SQLException
+            throws SQLException, IOException
     {
         UUID jobId = UUID.fromString(row.getString("job_id"));
         return buildJobFromRow(jobId, row);
     }
     
+    private void updateJobDescription(JobDescription desc, PreparedStatement preparedStatement) throws SQLException
+    {
+        // Substitute query parameters
+        preparedStatement.setString(1, desc.getId().toString());
+        preparedStatement.setString(2, desc.getTitle());
+        preparedStatement.setString(3, desc.getDetails());
+        preparedStatement.setDate(4, SqlDateConverter.toSqlDate(desc.getListingDate()));
+        preparedStatement.setDate(5, SqlDateConverter.toSqlDate(desc.getTargetEndDate()));
+        preparedStatement.setBigDecimal(6, desc.getPayment());
+
+        // Execute the query
+        preparedStatement.executeUpdate();
+    }
+    
+    private void saveJobDescription(JobDescription desc)
+            throws SQLException
+    {
+        String query =
+                "INSERT INTO JobDescriptions (description_id, title, details, listing_date, end_date, payment) " +
+                "VALUES (?,?,?,?,?,?)";
+       
+        try(PreparedStatement preparedStatement = connection.prepareStatement(query))
+        {
+            updateJobDescription(desc, preparedStatement);
+        }
+    }
+    
+    private void updateJobDescription(JobDescription desc)
+            throws SQLException
+    {
+        String query =
+                "UPDATE JobDescriptions " +
+                "SET description_id=?, title=?, details=?, listing_date=?, end_date=?, payment=?" +
+                "WHERE description_id=?";
+       
+        try(PreparedStatement preparedStatement = connection.prepareStatement(query))
+        {
+            preparedStatement.setString(7, desc.getId().toString());
+            updateJobDescription(desc, preparedStatement);
+        }
+    }
+    
+    private void updateJob(Job job, PreparedStatement preparedStatement) throws SQLException
+    {
+        // Substitute query parameters
+        preparedStatement.setString(1, job.getId().toString());
+        preparedStatement.setString(2, job.getEmployer().getUsername());
+        preparedStatement.setString(3, job.getDescription().getId().toString());
+        preparedStatement.setString(4, job.getStatus().name());
+
+        // Execute the query
+        preparedStatement.executeUpdate();
+    }
+    
+    private void saveJob(Job job) throws SQLException
+    {
+        String query =
+                "INSERT INTO Jobs (job_id, employer_id, description_id, state) " +
+                "VALUES (?,?,?,?)";
+        
+        try(PreparedStatement preparedStatement = connection.prepareStatement(query))
+        {
+            updateJob(job, preparedStatement);
+        }
+    }
+    
+    private void updateJob(Job job) throws SQLException
+    {
+        String query =
+                "UPDATE Jobs " +
+                "SET job_id=?, employer_id=?, description_id=?, state=? " +
+                "WHERE job_id=?";
+        
+        try(PreparedStatement preparedStatement = connection.prepareStatement(query))
+        {
+            preparedStatement.setString(5, job.getId().toString());
+            updateJob(job, preparedStatement);
+        }
+    }
+    
     @Override
-    public Job find(UUID jobId)
-        throws SQLException
+    public Job find(UUID jobId) throws IOException
     {
         // The SQL query selects the Job and Job Description with the given ID
         String query =
-                "SELECT Jobs.description_id AS description_id, state, title, details, payment, listing_date, end_date " +
+                "SELECT Jobs.description_id AS description_id, employer_id, employee_id, state, title, details, payment, listing_date, end_date " +
                 "FROM Jobs " +
                 "INNER JOIN JobDescriptions " +
                 "ON Jobs.description_id = JobDescriptions.description_id " +
@@ -97,14 +211,17 @@ public class JobDAO implements ResourceDAO<Job>
             // Build Job DTOs
             return buildJobFromRow(jobId, results);
         }
+        catch(Exception ex)
+        {
+            throw new IOException("Could not find the specified resource", ex);
+        }
     }
 
     @Override
-    public List<Job> getAll()
-            throws SQLException
+    public List<Job> getAll() throws IOException
     {
         String query =
-                "SELECT job_id, Jobs.description_id AS description_id, state, title, details, payment, listing_date, end_date " +
+                "SELECT job_id, Jobs.description_id AS description_id, employer_id, employee_id, state, title, details, payment, listing_date, end_date " +
                 "FROM Jobs " +
                 "INNER JOIN JobDescriptions " +
                 "ON Jobs.description_id = JobDescriptions.description_id ";
@@ -119,6 +236,91 @@ public class JobDAO implements ResourceDAO<Job>
             
             return jobList;
         }
+        catch(Exception ex)
+        {
+            throw new IOException("Could not retrieve the resource", ex);
+        }
     }
     
+    @Override
+    public void save(Job job) throws IOException
+    {
+        // We save the Job Description first, because the Job depends on it
+        try
+        {
+            saveJobDescription(job.getDescription());
+            saveJob(job);
+        }
+        catch(Exception ex)
+        {
+            throw new IOException("Could not save the specified resource", ex);
+        }
+    }
+    
+    @Override
+    public boolean delete(Job job) throws IOException
+    {
+        String query =
+                "DELETE FROM Jobs " +
+                "WHERE job_id = ?";
+        
+        try(PreparedStatement preparedStatement = connection.prepareStatement(query))
+        {
+            // Substitute query parameters
+            preparedStatement.setString(1, job.getId().toString());
+
+            // Execute the query
+            int affectedRows = preparedStatement.executeUpdate();
+            return affectedRows > 0;
+        }
+        catch(Exception ex)
+        {
+            throw new IOException("Could not delete the specified resource", ex);
+        }
+    }
+    
+    @Override
+    public void update(Job job) throws IOException
+    {
+        try
+        {
+            updateJobDescription(job.getDescription());
+            updateJob(job);
+        }
+        catch(Exception ex)
+        {
+            throw new IOException("Could not update the specified resource", ex);
+        }
+    }
+    
+    @Override
+    public int count() throws IOException
+    {
+        String query = "SELECT count(1) FROM Jobs";
+        
+        try(Statement statement = connection.createStatement();
+            ResultSet results = statement.executeQuery(query))
+        {
+            if(!results.next())
+                return 0;
+            return results.getInt(1);
+        }
+        catch(Exception ex)
+        {
+            throw new IOException("Could not query the specified resource", ex);
+        }
+    }
+
+    @Override
+    public void close() throws IOException
+    {
+        try
+        {
+            connection.close();
+        }
+        catch(SQLException ex)
+        {
+            throw new IOException(ex);
+        }
+    }
 }

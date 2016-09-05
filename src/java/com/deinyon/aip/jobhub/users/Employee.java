@@ -9,6 +9,12 @@ package com.deinyon.aip.jobhub.users;
  *
  * @author Ddoodm
  */
-public class Employee {
-    
+public class Employee extends User
+{
+    public Employee() {
+    }
+
+    public Employee(String username, String email, String surname, String givenName, String company) {
+        super(username, email, surname, givenName, company);
+    }
 }

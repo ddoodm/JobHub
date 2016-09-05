@@ -1,5 +1,7 @@
 package com.deinyon.aip.jobhub;
 
+import com.deinyon.aip.jobhub.users.Employee;
+import com.deinyon.aip.jobhub.users.Employer;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -9,16 +11,19 @@ public class Job implements Serializable
 {
     private UUID id;
     private JobDescription description;
+    private Employee employee;
+    private Employer employer;
     private JobStatus status;
 
     public Job() {
         description = new JobDescription();
-        status = JobStatus.PROPOSED;
+        status = JobStatus.Proposed;
     }
     
-    public Job(UUID id, JobDescription description, JobStatus status)
+    public Job(UUID id, Employer employer, JobDescription description, JobStatus status)
     {
         this.id = id;
+        this.employer = employer;
         this.description = description;
         this.status = status;
     }
@@ -30,8 +35,10 @@ public class Job implements Serializable
      */
     public void prepare()
     {
-        // Set the job's listing date to now
-        description.setListingDate(new Date());
+        description.prepare();
+        
+        // Generate a new ID
+        id = UUID.randomUUID();
     }
 
     public Job(JobDescription description)
@@ -45,6 +52,22 @@ public class Job implements Serializable
 
     public void setDescription(JobDescription description) {
         this.description = description;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
+    public Employer getEmployer() {
+        return employer;
+    }
+
+    public void setEmployer(Employer employer) {
+        this.employer = employer;
     }
     
     public JobStatus getStatus() {

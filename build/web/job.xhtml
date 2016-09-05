@@ -19,8 +19,8 @@
                         <div class="container-fluid">
                             <div class="jumbotron jobhub-jumbo job-detail-jumbo">
                                 <div class="container">
-                                    <h1>#{jobController.job.description.title}</h1>
-                                    <p>Created by Test Systems Inc</p>
+                                    <h1><h:outputText value="#{jobController.job.description.title}"/></h1>
+                                    <p>Created by <h:outputText value="#{jobController.job.employer.displayName}"/></p>
                                 </div>
                             </div>
                         </div>
