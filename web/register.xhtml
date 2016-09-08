@@ -7,12 +7,17 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 
+    <f:metadata>
+        <f:viewParam id="classifier" name="classifier" value="#{registerController.userType}"/>
+        <f:event type="preRenderView" listener="#{registerController.initializeUser()}" />
+    </f:metadata>
+
     <f:view>
         <ui:composition template="common.xhtml">
             <ui:define name="content">
 
                 <div class="container">
-                    <h1>Sign Up with JobHub</h1>
+                    <h1>Become a JobHub <h:outputText value="#{registerController.userType}" /></h1>
                     <p>We're excited to have you along for the ride! Register here to start creating and doing jobs.</p>
 
                     <h:form id="registerForm">
@@ -28,7 +33,9 @@
                                         id="username"
                                         a:placeholder="Pick a username"
                                         styleClass="form-control"
-                                        value="#{registerController.user.username}"/>
+                                        value="#{registerController.user.username}">
+                                        <f:validator validatorId="com.deinyon.aip.jobhub.UrlValidator" />
+                                    </h:inputText>
                                 </div>
 
                                 <div class="form-group">
@@ -61,7 +68,8 @@
 
                                 <hr />
                                 <h2>Account Type</h2>
-                                <h:selectOneRadio styleClass="inline-radio-buttons" value="#{registerController.userType}">
+                                <h:selectOneRadio styleClass="inline-radio-buttons"
+                                                  value="#{registerController.userType}">
                                     <f:selectItem itemValue="Employee" itemLabel="Employee" />
                                     <f:selectItem itemValue="Employer" itemLabel="Employer" />
                                 </h:selectOneRadio>
@@ -72,14 +80,17 @@
                                 <div class="form-group">
 
                                     <div class="row">
-                                        <div class="col-md-12">
+                                        <div class="col-md-6">
                                             <h:outputLabel value="Your Name" styleClass="pull-left" />
+                                            <h:message for="givenName"  styleClass="pull-right error" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h:message for="surname"  styleClass="pull-right error" />
                                         </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <h:message for="givenName"  styleClass="pull-right error" />
                                             <h:inputText
                                                 id="givenName"
                                                 a:placeholder="Your first name"
@@ -87,7 +98,6 @@
                                                 value="#{registerController.user.givenName}"/>
                                         </div>
                                         <div class="col-md-6">
-                                            <h:message for="surname"  styleClass="pull-right error" />
                                             <h:inputText
                                                 id="surname"
                                                 a:placeholder="Your surname"

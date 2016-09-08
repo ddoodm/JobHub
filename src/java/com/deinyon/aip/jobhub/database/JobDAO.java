@@ -39,17 +39,11 @@ public class JobDAO implements ResourceDAO<UUID, Job>
         }
     }
     
-    private <T extends User> T loadUser(String username, Class<T> type) throws IOException
+    private <T extends User> T loadUser(String username, UserClassification classifier) throws IOException
     {
         // We wish to recycle the current connection, so we do not close the new DAO
         UserDAO userDao = new UserDAO(connection);
-        
-        if(type == Employee.class)
-            return (T)userDao.findEmployee(username);
-        if(type == Employer.class)
-            return (T)userDao.findEmployer(username);
-        
-        return null;
+        return userDao.findUserOfType(username, classifier);
     }
     
     /**
@@ -71,7 +65,7 @@ public class JobDAO implements ResourceDAO<UUID, Job>
         JobStatus jobStatus = JobStatus.valueOf(row.getString("state"));
         
         // Load required Employer
-        Employer employer = loadUser(row.getString("employer_id"), Employer.class);
+        Employer employer = loadUser(row.getString("employer_id"), UserClassification.Employer);
 
         // Create the DTO(s)
         JobDescription jobDesc = new JobDescription(
@@ -85,7 +79,7 @@ public class JobDAO implements ResourceDAO<UUID, Job>
         Job job = new Job(jobId, employer, jobDesc, jobStatus);
         
         // Load relation IDs
-        job.setEmployee(loadUser(row.getString("employee_id"), Employee.class));
+        job.setEmployee(loadUser(row.getString("employee_id"), UserClassification.Employer));
         
         return job;
     }

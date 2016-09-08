@@ -19,13 +19,17 @@
                             <hr />
                             <div class="row">
                                 <div class="col-md-5">
-                                    <a class="btn btn-lg btn-primary center-block" href="#" role="button">Become a Programmer &raquo;</a>
+                                    <h:link value="Become an Employee &raquo;" outcome="register" styleClass="btn btn-lg btn-primary center-block">
+                                        <f:param name="classifier" value="Employee"/>
+                                    </h:link>
                                 </div>
                                 <div class="col-md-2 mid-fade-text">
                                     <p>OR</p>
                                 </div>
                                 <div class="col-md-5">
-                                    <a class="btn btn-lg btn-primary center-block" href="#" role="button">Become an Employer &raquo;</a>
+                                    <h:link value="Become an Employer &raquo;" outcome="register" styleClass="btn btn-lg btn-primary center-block">
+                                        <f:param name="classifier" value="Employer"/>
+                                    </h:link>
                                 </div>
                             </div>
                         </div>

@@ -10,6 +10,7 @@ CREATE TABLE Attachments(
 CREATE TABLE Users(
   user_id         VARCHAR(64)         NOT NULL PRIMARY KEY,
   classifier      VARCHAR(64)         NOT NULL,
+  password        VARCHAR(64)         NOT NULL,
   first_name      VARCHAR(255),
   last_name       VARCHAR(255),
   email           VARCHAR(512),

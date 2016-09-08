@@ -3,9 +3,8 @@ package com.deinyon.aip.jobhub;
 import com.deinyon.aip.jobhub.users.Employee;
 import com.deinyon.aip.jobhub.users.Employer;
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
+import org.hibernate.validator.constraints.*;
 
 public class Job implements Serializable
 {
@@ -46,6 +45,8 @@ public class Job implements Serializable
         this.description = description;
     }
 
+    @NotEmpty(message = "Please enter a short description")
+    @Length(min = 3, max = 10000, message = "Please enter a meaningful description below 10,000 characters")
     public JobDescription getDescription() {
         return description;
     }

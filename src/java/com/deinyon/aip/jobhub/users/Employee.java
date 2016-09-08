@@ -5,16 +5,26 @@
  */
 package com.deinyon.aip.jobhub.users;
 
+import com.deinyon.aip.jobhub.database.UserClassification;
+import com.deinyon.aip.jobhub.util.ShaHash;
+
 /**
  *
  * @author Ddoodm
  */
 public class Employee extends User
 {
-    public Employee() {
+    public Employee()
+    { }
+
+    public Employee(String username, ShaHash password, String email, String surname, String givenName, String company)
+    {
+        super(username, password, email, surname, givenName, company);
     }
 
-    public Employee(String username, String email, String surname, String givenName, String company) {
-        super(username, email, surname, givenName, company);
+    @Override
+    public UserClassification getClassifier()
+    {
+        return UserClassification.Employee;
     }
 }
