@@ -59,3 +59,11 @@ CREATE TABLE JobPayloads (
   FOREIGN KEY (attachment_id) REFERENCES Attachments(attachment_id)
 );
 
+------ User authentication views ------
+CREATE VIEW jdbcrealm_user (username, password) AS
+    SELECT user_id, password
+    FROM Users;
+
+CREATE VIEW jdbcrealm_group (username, groupname) AS
+    SELECT user_id, 'Users'
+    FROM Users;

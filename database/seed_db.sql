@@ -3,10 +3,10 @@
 -- First, initialize employers and employees
 
 INSERT INTO Users (user_id, classifier, password, first_name, last_name, email, company, biography) VALUES
-( 'ddoodm', 'Employer', 'testPass', 'Deinyon', 'Davies', 'deinyond@gmail.com', 'DDOODM Software Inc.', 'I made this place.' );
+( 'ddoodm', 'Employer', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 'Deinyon', 'Davies', 'deinyond@gmail.com', 'DDOODM Software Inc.', 'I made this place.' );
 
 INSERT INTO Users (user_id, classifier, password, first_name, last_name, email, biography) VALUES
-( 'mikej', 'Employee', 'testPass', 'Mike', 'Johnson', 'mikeyj@gmail.com', 'This is Mike; your humble employee.' );
+( 'mikej', 'Employee', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 'Mike', 'Johnson', 'mikeyj@gmail.com', 'This is Mike; your humble employee.' );
 
 -- Now, post jobs by employers
 

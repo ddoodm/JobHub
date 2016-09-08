@@ -35,4 +35,30 @@
         <param-name>jobAttachmentBasePath</param-name>
         <param-value>D:\JobHubStore\</param-value>
     </context-param>
+    
+    <!-- Authentication configuration -->
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <realm-name>JobHubRealm</realm-name>
+        <form-login-config>
+            <form-login-page>/login.xhtml</form-login-page>
+            <form-error-page>/login.xhtml</form-error-page>
+        </form-login-config>
+    </login-config>
+
+    <security-constraint>
+        <display-name>Logged in pages</display-name>
+        <web-resource-collection>
+            <web-resource-name>secure</web-resource-name>
+            <url-pattern>/jobs.xhtml</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>Users</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-role>
+        <description>Logged in Users</description>
+        <role-name>Users</role-name>
+    </security-role>
 </web-app>
