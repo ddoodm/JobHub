@@ -8,6 +8,7 @@ package com.deinyon.aip.jobhub.controllers;
 import com.deinyon.aip.jobhub.Job;
 import com.deinyon.aip.jobhub.database.JobDAO;
 import com.deinyon.aip.jobhub.users.Employer;
+import com.deinyon.aip.jobhub.users.User;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.UUID;
@@ -74,21 +75,26 @@ public class JobController implements Serializable
         {
             dao.update(job);
         }
-        return "jobs?faces-redirect=true";
+        return "jobs";
     }
     
-    public String saveJob() throws IOException
+    public String saveJob() throws IOException, IllegalAccessException
     {
-        // TODO: Use the real user
-        Employer employer = new Employer();
-        employer.setUsername("ddoodm");
-        job.setEmployer(employer);
+        // Here, we associate this job with the presently logged-in user
+        User user = new UserController().getActingUser();
+        
+        // If the user is not an employer, they are not authorized to create a job
+        if(!(user instanceof Employer))
+            throw new IllegalAccessException("A non-employer attempted to save a Job Listing");
+        
+        // Associate the job
+        job.setEmployer((Employer)user);
         
         try(JobDAO dao = new JobDAO())
         {
             dao.save(job);
         }
-        return "jobs?faces-redirect=true";
+        return "jobs";
     }
     
     public String deleteJob() throws IOException
@@ -97,6 +103,6 @@ public class JobController implements Serializable
         {
             dao.delete(job);
         }
-        return "jobs?faces-redirect=true";
+        return "jobs";
     }
 }

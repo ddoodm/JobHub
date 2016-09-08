@@ -13,7 +13,7 @@
     </f:metadata>
     
     <f:view>
-        <ui:composition template="common.xhtml">
+        <ui:composition template="/common.xhtml">
             <ui:define name="content">
 
                 <div class="container">
@@ -23,7 +23,7 @@
                     <h:form id="createEditJobForm" enctype="multipart/form-data">
                         <div class="panel panel-default">
                             <div class="panel-body">
-                                <ui:include src="WEB-INF/CreateEditJobForm.xhtml" />
+                                <ui:include src="/WEB-INF/CreateEditJobForm.xhtml" />
 
                                 <hr />
 
@@ -42,7 +42,7 @@
             </ui:define>
 
             <ui:define name="scripts">
-                <script type="text/javascript" src="resources/scripts/createEditJobFormHelper.js" />
+                <script type="text/javascript" src="../resources/scripts/createEditJobFormHelper.js" />
             </ui:define>
         </ui:composition>
     </f:view>

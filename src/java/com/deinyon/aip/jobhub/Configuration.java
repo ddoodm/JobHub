@@ -7,5 +7,8 @@ package com.deinyon.aip.jobhub;
 
 public class Configuration
 {
+    /**
+     * The resource name of the database resource
+     */
     public static final String DATABASE_RESOURCE_NAME = "jdbc/jobhub";
 }

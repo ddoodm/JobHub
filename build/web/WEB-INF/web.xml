@@ -47,18 +47,35 @@
     </login-config>
 
     <security-constraint>
-        <display-name>Logged in pages</display-name>
+        <display-name>Employer Pages</display-name>
         <web-resource-collection>
             <web-resource-name>secure</web-resource-name>
-            <url-pattern>/jobs.xhtml</url-pattern>
+            <url-pattern>/jobs/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
-            <role-name>Users</role-name>
+            <role-name>Employer</role-name>
+        </auth-constraint>
+    </security-constraint>
+    
+    <security-constraint>
+        <display-name>Employee Pages</display-name>
+        <web-resource-collection>
+            <web-resource-name>secure</web-resource-name>
+            <url-pattern>/jobs/job.xhtml*</url-pattern>
+            <url-pattern>/jobs/jobs.xhtml</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>Employee</role-name>
         </auth-constraint>
     </security-constraint>
 
     <security-role>
-        <description>Logged in Users</description>
-        <role-name>Users</role-name>
+        <description>Logged in Employers</description>
+        <role-name>Employer</role-name>
+    </security-role>
+    
+    <security-role>
+        <description>Logged in Employees</description>
+        <role-name>Employee</role-name>
     </security-role>
 </web-app>

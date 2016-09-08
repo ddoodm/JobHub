@@ -65,5 +65,5 @@ CREATE VIEW jdbcrealm_user (username, password) AS
     FROM Users;
 
 CREATE VIEW jdbcrealm_group (username, groupname) AS
-    SELECT user_id, 'Users'
+    SELECT user_id, classifier
     FROM Users;
