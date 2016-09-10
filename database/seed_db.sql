@@ -8,6 +8,9 @@ INSERT INTO Users (user_id, classifier, password, first_name, last_name, email, 
 INSERT INTO Users (user_id, classifier, password, first_name, last_name, email, biography) VALUES
 ( 'mikej', 'Employee', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 'Mike', 'Johnson', 'mikeyj@gmail.com', 'This is Mike; your humble employee.' );
 
+INSERT INTO Users (user_id, classifier, password, first_name, last_name, email, biography) VALUES
+( 'employee', 'Employee', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 'Mister', 'Employee', 'employee@gmail.com', 'This is Mr. Employee; your humble employee.' );
+
 -- Now, post jobs by employers
 
 INSERT INTO JobDescriptions (description_id, title, details, listing_date, end_date, payment) VALUES

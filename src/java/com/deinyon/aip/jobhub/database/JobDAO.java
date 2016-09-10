@@ -64,7 +64,7 @@ public class JobDAO implements ResourceDAO<UUID, Job>
         // Validate state enum value
         JobStatus jobStatus = JobStatus.valueOf(row.getString("state"));
         
-        // Load required Employer
+        // Load the Employer and Employee
         Employer employer = loadUser(row.getString("employer_id"), UserClassification.Employer);
 
         // Create the DTO(s)
@@ -79,7 +79,7 @@ public class JobDAO implements ResourceDAO<UUID, Job>
         Job job = new Job(jobId, employer, jobDesc, jobStatus);
         
         // Load relation IDs
-        job.setEmployee(loadUser(row.getString("employee_id"), UserClassification.Employer));
+        job.setEmployee(loadUser(row.getString("employee_id"), UserClassification.Employee));
         
         return job;
     }
@@ -148,6 +148,12 @@ public class JobDAO implements ResourceDAO<UUID, Job>
         preparedStatement.setString(2, job.getEmployer().getUsername());
         preparedStatement.setString(3, job.getDescription().getId().toString());
         preparedStatement.setString(4, job.getStatus().name());
+        
+        // Set optional 'employee' value
+        if(job.getEmployee() != null)
+            preparedStatement.setString(5, job.getEmployee().getUsername());
+        else
+            preparedStatement.setNull(5, Types.VARCHAR);
 
         // Execute the query
         preparedStatement.executeUpdate();
@@ -156,8 +162,8 @@ public class JobDAO implements ResourceDAO<UUID, Job>
     private void saveJob(Job job) throws SQLException
     {
         String query =
-                "INSERT INTO Jobs (job_id, employer_id, description_id, state) " +
-                "VALUES (?,?,?,?)";
+                "INSERT INTO Jobs (job_id, employer_id, description_id, state, employee_id) " +
+                "VALUES (?,?,?,?,?)";
         
         try(PreparedStatement preparedStatement = connection.prepareStatement(query))
         {
@@ -169,12 +175,12 @@ public class JobDAO implements ResourceDAO<UUID, Job>
     {
         String query =
                 "UPDATE Jobs " +
-                "SET job_id=?, employer_id=?, description_id=?, state=? " +
+                "SET job_id=?, employer_id=?, description_id=?, state=?, employee_id=? " +
                 "WHERE job_id=?";
         
         try(PreparedStatement preparedStatement = connection.prepareStatement(query))
         {
-            preparedStatement.setString(5, job.getId().toString());
+            preparedStatement.setString(6, job.getId().toString());
             updateJob(job, preparedStatement);
         }
     }

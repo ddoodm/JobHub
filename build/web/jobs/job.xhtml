@@ -32,15 +32,20 @@
                                         <div class='col-sm-6'>
                                             <h2>About the Job</h2>
                                         </div>
-                                        <div class='col-sm-6'>
-                                            <div class="btn-block">
-                                                <h:commandButton value="Delete this Job" action="#{jobController.deleteJob}" styleClass="btn btn-default pull-right" />
+                                        <ui:fragment rendered="#{userController.userCreatedJob(jobController.job)}">
+                                            <div class='col-sm-6'>
+                                                <div class="btn-block">
+                                                    <h:commandButton
+                                                        value="Delete this Job"
+                                                        action="#{jobController.deleteJob}"
+                                                        styleClass="btn btn-default pull-right" />
 
-                                                <h:button outcome="editJob" value="Edit this Job" styleClass="btn btn-default pull-right">
-                                                    <f:param name="jobId" value="#{jobController.job.id}" />
-                                                </h:button>
+                                                    <h:button outcome="editJob" value="Edit this Job" styleClass="btn btn-default pull-right">
+                                                        <f:param name="jobId" value="#{jobController.job.id}" />
+                                                    </h:button>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </ui:fragment>
                                     </div>
 
                                     <hr />
@@ -78,13 +83,22 @@
                                                         </h:outputText>
                                                     </td>
                                                 </tr>
+                                                <tr>
+                                                    <th>Status</th>
+                                                    <td>
+                                                        <h:outputText value="#{jobController.job.statusMessage}" />
+                                                    </td>
+                                                </tr>
                                             </table>
                                         </div>
                                     </div>
 
-                                    <ui:fragment>
+                                    <ui:fragment rendered="#{userController.userIsEmployee}">
                                         <hr />
-                                        <button type="button" class="btn-lg btn-primary center-block">Take the Job</button>
+                                        <h:commandButton
+                                            action="#{jobController.takeJob}"
+                                            styleClass="btn-lg btn-primary center-block"
+                                            value="Take the Job" />
                                     </ui:fragment>
 
                                 </div>

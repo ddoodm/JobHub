@@ -7,6 +7,7 @@ package com.deinyon.aip.jobhub.controllers;
 
 import com.deinyon.aip.jobhub.Job;
 import com.deinyon.aip.jobhub.database.JobDAO;
+import com.deinyon.aip.jobhub.users.Employee;
 import com.deinyon.aip.jobhub.users.Employer;
 import com.deinyon.aip.jobhub.users.User;
 import java.io.IOException;
@@ -104,5 +105,13 @@ public class JobController implements Serializable
             dao.delete(job);
         }
         return "jobs";
+    }
+    
+    public void takeJob() throws IOException
+    {
+        // Here, we take the current user, and assign them to the job
+        Employee currentUser = new UserController().<Employee>getActingUserTyped();
+        job.delegateTo(currentUser);
+        updateJob();
     }
 }

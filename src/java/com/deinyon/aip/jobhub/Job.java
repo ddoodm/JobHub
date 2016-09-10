@@ -27,6 +27,11 @@ public class Job implements Serializable
         this.status = status;
     }
 
+    public Job(JobDescription description)
+    {
+        this.description = description;
+    }
+    
     /**
      * Called when the job's details have been written,
      * and before the job is inserted into a database.
@@ -39,10 +44,22 @@ public class Job implements Serializable
         // Generate a new ID
         id = UUID.randomUUID();
     }
-
-    public Job(JobDescription description)
+    
+    public void delegateTo(Employee employee)
     {
-        this.description = description;
+        this.setEmployee(employee);
+        this.status = JobStatus.Approved;
+    }
+    
+    public String getStatusMessage()
+    {
+        switch(status)
+        {
+            case Approved:
+                return String.format("Approved by %s", employee.getDisplayName());
+            default:
+                return status.name();
+        }
     }
 
     @NotEmpty(message = "Please enter a short description")

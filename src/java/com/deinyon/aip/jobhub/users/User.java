@@ -7,6 +7,7 @@ package com.deinyon.aip.jobhub.users;
 
 import com.deinyon.aip.jobhub.database.UserClassification;
 import com.deinyon.aip.jobhub.util.ShaHash;
+import java.util.Objects;
 import org.hibernate.validator.constraints.*;
 
 public abstract class User
@@ -32,6 +33,26 @@ public abstract class User
      */
     public abstract UserClassification getClassifier();
     
+    @Override
+    public boolean equals(Object other)
+    {
+        if(!(other instanceof User))
+            return false;
+        
+        return ((User)other).getUsername().equals(this.getUsername());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 31 * hash + Objects.hashCode(this.username);
+        hash = 31 * hash + Objects.hashCode(this.email);
+        hash = 31 * hash + Objects.hashCode(this.surname);
+        hash = 31 * hash + Objects.hashCode(this.givenName);
+        return hash;
+    }
+    
     @Length(min = 2, max = 64, message = "Please enter a meaningful username below 64 characters")
     @NotEmpty(message = "Please enter a username")
     public String getUsername() {
@@ -42,7 +63,8 @@ public abstract class User
         this.username = username;
     }
 
-    @Email
+    @NotEmpty(message = "Please enter your E-Mail address")
+    @Email(message = "Please enter a well-formed E-Mail address")
     public String getEmail() {
         return email;
     }

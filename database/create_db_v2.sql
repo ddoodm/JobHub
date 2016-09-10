@@ -50,9 +50,9 @@ CREATE TABLE Jobs (
 CREATE TABLE JobPayloads (
   payload_id      VARCHAR(64)         NOT NULL PRIMARY KEY,
   job_id          VARCHAR(64)         NOT NULL,
-  version         VARCHAR(32)     NOT NULL,
-  details         LONG VARCHAR    NOT NULL,
-  submission_date DATE            NOT NULL,
+  version         VARCHAR(32)         NOT NULL,
+  details         LONG VARCHAR        NOT NULL,
+  submission_date DATE                NOT NULL,
   attachment_id   VARCHAR(64)         NOT NULL,
 
   FOREIGN KEY (job_id) REFERENCES Jobs(job_id),

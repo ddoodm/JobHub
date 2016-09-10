@@ -25,9 +25,11 @@
                             <li class="#{view.viewId eq '/jobs/list.xhtml' ? 'active' : ''}">
                                 <h:link outcome="jobs">Jobs</h:link>
                             </li>
-                            <li class="#{view.viewId eq '/jobs/create.xhtml' ? 'active' : ''}">
-                                <h:link outcome="createJob">Create a Job</h:link>
-                            </li>
+                            <ui:fragment rendered="#{userController.userIsEmployer}">
+                                <li class="#{view.viewId eq '/jobs/create.xhtml' ? 'active' : ''}">
+                                    <h:link outcome="createJob">Create a Job</h:link>
+                                </li>
+                            </ui:fragment>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <ui:fragment rendered="#{empty request.remoteUser}">
@@ -41,6 +43,7 @@
                             <ui:fragment rendered="#{not empty request.remoteUser}">
                                 <li>
                                     <p class="navbar-text">
+                                        Hi,
                                         <h:outputText value="#{userController.actingUser.fullName}" />
                                     </p>
                                 </li>
