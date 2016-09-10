@@ -22,39 +22,16 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-public class UserDAO implements ResourceDAO<String, User>
+public class UserDAO extends ResourceDAO<String, User>
 {
-    private Connection connection;
-    
     public UserDAO() throws IOException
     {
-        try
-        {
-            DataSource dataSource = (DataSource)InitialContext.doLookup(Configuration.DATABASE_RESOURCE_NAME);
-            this.connection = dataSource.getConnection();
-        }
-        catch(SQLException | NamingException ex)
-        {
-            throw new IOException("A database error prevented the DAO from initializing.", ex);
-        }
+        super();
     }
     
     public UserDAO(Connection connection)
     {
-        this.connection = connection;
-    }
-    
-    @Override
-    public void close() throws IOException
-    {
-        try
-        {
-            connection.close();
-        }
-        catch(SQLException ex)
-        {
-            throw new IOException(ex);
-        }
+        super(connection);
     }
     
     private User buildUserFromRow(ResultSet results) throws SQLException, IOException

@@ -5,27 +5,41 @@
  */
 package com.deinyon.aip.jobhub.controllers;
 
-import com.deinyon.aip.jobhub.Job;
+import com.deinyon.aip.jobhub.model.Job;
 import com.deinyon.aip.jobhub.database.JobDAO;
 import com.deinyon.aip.jobhub.users.Employee;
 import com.deinyon.aip.jobhub.users.Employer;
 import com.deinyon.aip.jobhub.users.User;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Map;
 import java.util.UUID;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.RequestScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
 import javax.servlet.http.Part;
 
-@SessionScoped
+@RequestScoped
 @ManagedBean(name = "jobController")
 public class JobController implements Serializable
 {
     private Job job;
+    private UserController userController;
     
     public Job getJob()
     {
         return this.job;
+    }
+    
+    private UserController getUserController()
+    {
+        if(this.userController == null)
+            return this.userController = new UserController();
+        return this.userController;
     }
     
     /**
@@ -52,31 +66,26 @@ public class JobController implements Serializable
         job.prepare();
     }
     
+    private void loadJob(UUID jobId) throws IOException
+    {
+        try(JobDAO dao = new JobDAO())
+        {
+            this.job = dao.find(jobId);
+        }
+    }
+    
     public void loadJob(String jobIdString) throws IOException
     {
         try
         {
             UUID jobUuid = UUID.fromString(jobIdString);
-            
-            try(JobDAO dao = new JobDAO())
-            {
-                this.job = dao.find(jobUuid);
-            }
+            loadJob(jobUuid);
         }
         catch (IllegalArgumentException e)
         {
             // Handles cases where the Job ID string is null or invalid
             this.job = null;
         }
-    }
-    
-    public String updateJob() throws IOException
-    {
-        try(JobDAO dao = new JobDAO())
-        {
-            dao.update(job);
-        }
-        return "jobs";
     }
     
     public String saveJob() throws IOException, IllegalAccessException
@@ -98,6 +107,15 @@ public class JobController implements Serializable
         return "jobs";
     }
     
+    public String updateJob() throws IOException
+    {
+        try(JobDAO dao = new JobDAO())
+        {
+            dao.update(job);
+        }
+        return "jobs";
+    }
+    
     public String deleteJob() throws IOException
     {
         try(JobDAO dao = new JobDAO())
@@ -105,6 +123,21 @@ public class JobController implements Serializable
             dao.delete(job);
         }
         return "jobs";
+    }
+    
+    /**
+     * @return True if this job listing could possibly be approved by the current user. False otherwise.
+     * @throws java.io.IOException
+     */
+    public boolean isApprovable() throws IOException
+    {
+        User actingUser = getUserController().getActingUser();
+        return job.isApprovableBy(actingUser);
+    }
+    
+    public boolean isUserCanPostPayloads() throws IOException
+    {
+        return job.canUserPostPayloads(getUserController().getActingUser());
     }
     
     public void takeJob() throws IOException

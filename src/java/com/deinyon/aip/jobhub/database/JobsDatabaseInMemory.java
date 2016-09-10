@@ -1,7 +1,7 @@
 package com.deinyon.aip.jobhub.database;
 
-import com.deinyon.aip.jobhub.Job;
-import com.deinyon.aip.jobhub.JobDescription;
+import com.deinyon.aip.jobhub.model.Job;
+import com.deinyon.aip.jobhub.model.JobDescription;
 import java.math.BigDecimal;
 
 import java.util.Collection;

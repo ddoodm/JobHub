@@ -1,6 +1,6 @@
 package com.deinyon.aip.jobhub.controllers;
 
-import com.deinyon.aip.jobhub.Job;
+import com.deinyon.aip.jobhub.model.Job;
 import com.deinyon.aip.jobhub.database.JobDAO;
 import java.io.IOException;
 

@@ -25,7 +25,7 @@
                             <li class="#{view.viewId eq '/jobs/list.xhtml' ? 'active' : ''}">
                                 <h:link outcome="jobs">Jobs</h:link>
                             </li>
-                            <ui:fragment rendered="#{userController.userIsEmployer}">
+                            <ui:fragment rendered="#{userController.userEmployer}">
                                 <li class="#{view.viewId eq '/jobs/create.xhtml' ? 'active' : ''}">
                                     <h:link outcome="createJob">Create a Job</h:link>
                                 </li>

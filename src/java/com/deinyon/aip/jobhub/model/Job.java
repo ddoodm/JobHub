@@ -1,8 +1,11 @@
-package com.deinyon.aip.jobhub;
+package com.deinyon.aip.jobhub.model;
 
 import com.deinyon.aip.jobhub.users.Employee;
 import com.deinyon.aip.jobhub.users.Employer;
+import com.deinyon.aip.jobhub.users.User;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.UUID;
 import org.hibernate.validator.constraints.*;
 
@@ -13,18 +16,23 @@ public class Job implements Serializable
     private Employee employee;
     private Employer employer;
     private JobStatus status;
+    
+    private Collection<JobPayload> payloads;
 
-    public Job() {
+    public Job()
+    {
         description = new JobDescription();
         status = JobStatus.Proposed;
+        payloads = new ArrayList<>();
     }
     
-    public Job(UUID id, Employer employer, JobDescription description, JobStatus status)
+    public Job(UUID id, Employer employer, JobDescription description, JobStatus status, Collection<JobPayload> payloads)
     {
         this.id = id;
         this.employer = employer;
         this.description = description;
         this.status = status;
+        this.payloads = payloads;
     }
 
     public Job(JobDescription description)
@@ -103,5 +111,33 @@ public class Job implements Serializable
     public void setId(UUID id)
     {
         this.id = id;
+    }
+
+    /**
+     * @param actingUser The user who is currently logged-in
+     * @return True if the job is in a state which permits approval
+     */
+    public boolean isApprovableBy(User actingUser)
+    {
+        // The user must be an employee in order to approve a job
+        if(!(actingUser instanceof Employee))
+            return false;
+        
+        // Only proposed jobs may be approved
+        return this.status == JobStatus.Proposed;
+    }
+
+    public boolean canUserPostPayloads(User actingUser)
+    {
+        // If this job has not been approved, it cannot have payloads
+        if(this.status != JobStatus.Approved || this.employee == null)
+            return false;
+        
+        // Only employees may post payloads
+        if(!(actingUser instanceof Employee))
+            return false;
+        
+        // The user may post payloads if they accepted the job
+        return this.employee.equals(actingUser);
     }
 }

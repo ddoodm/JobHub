@@ -6,9 +6,10 @@
 package com.deinyon.aip.jobhub.database;
 
 import com.deinyon.aip.jobhub.Configuration;
-import com.deinyon.aip.jobhub.Job;
-import com.deinyon.aip.jobhub.JobDescription;
-import com.deinyon.aip.jobhub.JobStatus;
+import com.deinyon.aip.jobhub.model.Job;
+import com.deinyon.aip.jobhub.model.JobDescription;
+import com.deinyon.aip.jobhub.model.JobPayload;
+import com.deinyon.aip.jobhub.model.JobStatus;
 import com.deinyon.aip.jobhub.users.Employee;
 import com.deinyon.aip.jobhub.users.Employer;
 import com.deinyon.aip.jobhub.users.User;
@@ -16,34 +17,26 @@ import com.deinyon.aip.jobhub.util.SqlDateConverter;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 
-public class JobDAO implements ResourceDAO<UUID, Job>
-{
-    private Connection connection;
-    
+public class JobDAO extends ResourceDAO<UUID, Job>
+{   
     public JobDAO() throws IOException
     {
-        try
-        {
-            DataSource dataSource = (DataSource)InitialContext.doLookup(Configuration.DATABASE_RESOURCE_NAME);
-            this.connection = dataSource.getConnection();
-        }
-        catch(SQLException | NamingException ex)
-        {
-            throw new IOException("A database error prevented the DAO from initializing.", ex);
-        }
+        super();
     }
     
     private <T extends User> T loadUser(String username, UserClassification classifier) throws IOException
     {
         // We wish to recycle the current connection, so we do not close the new DAO
-        UserDAO userDao = new UserDAO(connection);
-        return userDao.findUserOfType(username, classifier);
+        return new UserDAO(connection).findUserOfType(username, classifier);
+    }
+    
+    private Collection<JobPayload> loadPayloads(UUID jobId) throws IOException
+    {
+        return new PayloadDAO(connection).getForJob(jobId);
     }
     
     /**
@@ -66,6 +59,9 @@ public class JobDAO implements ResourceDAO<UUID, Job>
         
         // Load the Employer and Employee
         Employer employer = loadUser(row.getString("employer_id"), UserClassification.Employer);
+        
+        // Load this job's payloads
+        Collection<JobPayload> payloads = loadPayloads(jobId);
 
         // Create the DTO(s)
         JobDescription jobDesc = new JobDescription(
@@ -76,7 +72,7 @@ public class JobDAO implements ResourceDAO<UUID, Job>
                 row.getDate("listing_date"),
                 row.getDate("end_date")
             );
-        Job job = new Job(jobId, employer, jobDesc, jobStatus);
+        Job job = new Job(jobId, employer, jobDesc, jobStatus, payloads);
         
         // Load relation IDs
         job.setEmployee(loadUser(row.getString("employee_id"), UserClassification.Employee));
@@ -308,19 +304,6 @@ public class JobDAO implements ResourceDAO<UUID, Job>
         catch(Exception ex)
         {
             throw new IOException("Could not query the specified resource", ex);
-        }
-    }
-
-    @Override
-    public void close() throws IOException
-    {
-        try
-        {
-            connection.close();
-        }
-        catch(SQLException ex)
-        {
-            throw new IOException(ex);
         }
     }
 }

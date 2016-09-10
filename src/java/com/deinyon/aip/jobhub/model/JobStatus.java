@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.deinyon.aip.jobhub;
+package com.deinyon.aip.jobhub.model;
 
 public enum JobStatus {
     Proposed, Approved, Completed, Cancelled

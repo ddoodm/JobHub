@@ -5,7 +5,7 @@
  */
 package com.deinyon.aip.jobhub.controllers;
 
-import com.deinyon.aip.jobhub.Job;
+import com.deinyon.aip.jobhub.model.Job;
 import com.deinyon.aip.jobhub.database.UserClassification;
 import com.deinyon.aip.jobhub.database.UserDAO;
 import com.deinyon.aip.jobhub.users.Employer;
@@ -50,6 +50,9 @@ public class UserController
     
     public String logOut()
     {
+        // Do not cache this user any longer
+        this.cachedUser = null;
+        
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest)context.getExternalContext().getRequest();
         
@@ -77,7 +80,7 @@ public class UserController
         return job.getEmployer().equals(user);
     }
     
-    public boolean isUserIsEmployee() throws IOException
+    public boolean isUserEmployee() throws IOException
     {
         User user = getActingUser();
         if(user == null)
@@ -86,7 +89,7 @@ public class UserController
         return user.getClassifier() == UserClassification.Employee;
     }
     
-    public boolean isUserIsEmployer() throws IOException
+    public boolean isUserEmployer() throws IOException
     {
         User user = getActingUser();
         if(user == null)

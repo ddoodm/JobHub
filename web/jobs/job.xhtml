@@ -4,7 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 
     <!-- Select the job with the ID specified in the query string -->
     <f:metadata>
@@ -93,12 +94,37 @@
                                         </div>
                                     </div>
 
-                                    <ui:fragment rendered="#{userController.userIsEmployee}">
+                                    <ui:fragment rendered="#{jobController.approvable}">
                                         <hr />
                                         <h:commandButton
                                             action="#{jobController.takeJob}"
                                             styleClass="btn-lg btn-primary center-block"
                                             value="Take the Job" />
+                                    </ui:fragment>
+
+                                    <ui:fragment rendered="#{jobController.userCanPostPayloads}">
+                                        <hr />
+                                        <div class="well">
+                                            <h4>Post a Payload</h4>
+                                            <p>Here, you can post a response to this job.</p>
+                                            <hr />
+
+                                            <div class="form-group">
+                                                <h:outputLabel value="Details" styleClass="pull-left" />
+                                                <h:message for="details"  styleClass="pull-right error" />
+                                                <h:inputTextarea
+                                                    id="details"
+                                                    a:placeholder="Write details about your payload"
+                                                    styleClass="form-control"
+                                                    />
+                                            </div>
+                                            <div class="btn-toolbar">
+                                                <h:commandButton
+                                                    value="Post it!"
+                                                    
+                                                    styleClass="btn btn-primary pull-right" />
+                                            </div>
+                                        </div>
                                     </ui:fragment>
 
                                 </div>

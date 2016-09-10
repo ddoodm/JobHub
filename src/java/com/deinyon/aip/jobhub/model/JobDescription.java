@@ -1,4 +1,4 @@
-package com.deinyon.aip.jobhub;
+package com.deinyon.aip.jobhub.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
