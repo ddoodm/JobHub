@@ -14,6 +14,8 @@ import javax.faces.convert.FacesConverter;
 /**
  * Converts a java.util.Date to a LocalDateTime and vice-versa.
  * 
+ * @remarks This utility is no longer used by JobHub.
+ * 
  * This utility class was created by hinneLinks of StackOverflow
  * in response to a question on using JSF DateTimeConverters with
  * LocalDateTime objects.

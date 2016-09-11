@@ -6,6 +6,11 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import java.util.UUID;
 
+/**
+ * A Java Server Faces datatype converter, which transforms a UUID object to
+ * its String representation, and vice-versa.
+ * @author Deinyon Davies <deinyond@gmail.com>
+ */
 @FacesConverter(forClass = UUID.class, value = "uuid")
 public class UuidConverter implements Converter
 {

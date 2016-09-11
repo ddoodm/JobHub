@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.deinyon.aip.jobhub.util;
 
 import java.security.*;
@@ -10,13 +5,22 @@ import java.security.*;
 /**
  * Stores a SHA256 checksum for password hashing.
  *
- * Based on code from the AIP Week 5 Practice Page:
+ * Based on code from the UTS: AIP Week 5 Practice Page:
  * https://benatuts.github.io/aip/05-practice.html
  */
 public class ShaHash
 {
+    /**
+     * The base16-encoded hash value
+     */
     private String hashValue;
     
+    /**
+     * Creates a new SHA256 Hash
+     * @param data The data to hash
+     * @throws IllegalStateException If the system does not support the SHA256
+     * hashing algorithm
+     */
     public ShaHash(String data) throws IllegalStateException
     {
         try
@@ -29,6 +33,13 @@ public class ShaHash
         }
     }
     
+    /**
+     * Generates a checksum of the specified data
+     * @param data The data to hash
+     * @return The hash of the specified data
+     * @throws NoSuchAlgorithmException If the system does not support the SHA256
+     * hashing algorithm
+     */
     private String hash256(String data) throws NoSuchAlgorithmException
     {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -36,6 +47,11 @@ public class ShaHash
         return bytesToHex(md.digest());
     }
 
+    /**
+     * Prints an array of bytes into a base16 (Hex) encoded String
+     * @param bytes The bytes to be converted to a String
+     * @return The base16 (Hex) encoded String representation of the byte array
+     */
     private String bytesToHex(byte[] bytes)
     {
         StringBuffer result = new StringBuffer();
@@ -45,6 +61,9 @@ public class ShaHash
         return result.toString();
     }
     
+    /**
+     * @return The base16-encoded String value of the hash
+     */
     public String toString()
     {
         return hashValue;

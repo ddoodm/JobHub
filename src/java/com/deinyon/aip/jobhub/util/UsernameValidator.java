@@ -8,8 +8,6 @@ package com.deinyon.aip.jobhub.util;
 import com.deinyon.aip.jobhub.database.UserDAO;
 import com.deinyon.aip.jobhub.users.User;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -19,7 +17,7 @@ import javax.faces.validator.ValidatorException;
 
 /**
  * Validates a username by querying to Users database
- * to determine whether the username already exists
+ * to determine whether the username already exists in the database.
  */
 @FacesValidator("com.deinyon.aip.jobhub.UrlValidator")
 public class UsernameValidator implements Validator
@@ -36,6 +34,7 @@ public class UsernameValidator implements Validator
         {
             User user = userDao.find(username);
             
+            // If the user exists, the name is taken
             if(user != null)
                 throw new ValidatorException(
                     new FacesMessage("That username is already taken. Please enter another."));

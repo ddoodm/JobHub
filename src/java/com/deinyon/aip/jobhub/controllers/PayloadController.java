@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.deinyon.aip.jobhub.controllers;
 
 import com.deinyon.aip.jobhub.database.PayloadDAO;
@@ -13,17 +8,36 @@ import java.io.IOException;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
+/**
+ * The Controller Bean which deals with saving and deleting payloads. This
+ * controller is used exclusively by the Job view.
+ * @author Deinyon Davies <deinyond@gmail.com>
+ */
 @SessionScoped
 @ManagedBean(name = "payloadController")
 public class PayloadController extends GenericController
 {
+    /**
+     * An empty payload which can be populated and inserted into the database.
+     */
     private JobPayload newPayload = new JobPayload();
     
+    /**
+     * @return An empty payload which can be populated and inserted into the database.
+     */
     public JobPayload getNewPayload()
     {
         return newPayload;
     }
     
+    /**
+     * Prepares and saves a payload to the database.
+     * @remarks The function makes associations between the payload and its
+     * related Job and Author.
+     * @param job The Job for which this payload is being posted.
+     * @throws IOException If a database error prevented the payload from being
+     * saved.
+     */
     public void postPayload(Job job) throws IOException
     {
         // We must prepare the payload for saving to the database
@@ -48,6 +62,14 @@ public class PayloadController extends GenericController
         newPayload = new JobPayload();
     }
     
+    /**
+     * Removes a payload from the database, and from the in-memory instance
+     * of its associated job.
+     * @param payload An instance of a Payload to remove from the database.
+     * @param job The Job with which this Payload is associated.
+     * @throws IOException If a database error prevented the payload from being
+     * deleted.
+     */
     public void delete(JobPayload payload, Job job) throws IOException
     {
         // Remove the payload from the job

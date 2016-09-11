@@ -6,7 +6,6 @@ import java.io.IOException;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -15,7 +14,7 @@ import java.util.Collection;
  */
 @ManagedBean(name = "jobListController")
 @RequestScoped
-public class JobListController implements Serializable
+public class JobListController extends GenericController
 {
     /**
      * @return A collection of all visible Jobs.

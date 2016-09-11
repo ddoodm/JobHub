@@ -8,20 +8,36 @@ package com.deinyon.aip.jobhub.controllers;
 import com.deinyon.aip.jobhub.model.Job;
 import com.deinyon.aip.jobhub.database.UserClassification;
 import com.deinyon.aip.jobhub.database.UserDAO;
+import com.deinyon.aip.jobhub.users.Employee;
 import com.deinyon.aip.jobhub.users.Employer;
 import com.deinyon.aip.jobhub.users.User;
 import java.io.IOException;
+import java.io.Serializable;
 import javax.faces.bean.*;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * A Controller Bean which is used by many components of the application to
+ * retrieve details about the presently logged-in user.
+ * @author Deinyon Davies <deinyond@gmail.com>
+ */
 @ManagedBean(name = "userController")
 @RequestScoped
-public class UserController
+public class UserController implements Serializable
 {
-    private static User cachedUser;
+    /**
+     * A cached instance of the presently active user, which prevents unnecessary
+     * database transactions when accessing the user from multiple controller
+     * instances.
+     */
+    private User cachedUser;
     
+    /**
+     * @return The presently logged-in user. Null if there is no logged-in user.
+     * @throws IOException If a database error prevented the user from being accessed.
+     */
     public User getActingUser() throws IOException
     {
         // If the user has been retrieved already in this request, return the cached instance
@@ -42,12 +58,21 @@ public class UserController
         }
     }
     
+    /**
+     * @param <T> The type of User to return (Employee or Employer)
+     * @return The presently logged-in user, casted to the specified type.
+     * @throws IOException If a database error prevented the user from being accessed.
+     */
     public <T extends User> T getActingUserTyped() throws IOException
     {
         User user = getActingUser();
         return (T)user;
     }
     
+    /**
+     * Logs the user out of the Container Security platform.
+     * @return The outcome to which the user should be directed.
+     */
     public String logOut()
     {
         // Do not cache this user any longer
@@ -62,6 +87,7 @@ public class UserController
         }
         catch (ServletException e)
         {
+            // The user could not be logged-out
             System.out.println(e);
             return "";
         }
@@ -69,32 +95,35 @@ public class UserController
         return "home";
     }
     
+    /**
+     * @param job The job which could have been created by the active user
+     * @return True if the presently active user created the specified job
+     * @throws IOException If a database error prevented the system from
+     * gathering details about the user.
+     */
     public boolean userCreatedJob(Job job) throws IOException
     {
         User user = getActingUser();
-        
-        // If the user is not an employer, they could not have created the job
-        if(user == null || !(user instanceof Employer))
-            return false;
-        
-        return job.getEmployer().equals(user);
+        return job.wasCreatedBy(user);
     }
     
+    /**
+     * @return True if the presently active user is an employee.
+     * @throws IOException If a database error prevented the system from
+     * gathering details about the user.
+     */
     public boolean isUserEmployee() throws IOException
     {
-        User user = getActingUser();
-        if(user == null)
-            return false;
-        
-        return user.getClassifier() == UserClassification.Employee;
+        return getActingUser() instanceof Employee;
     }
     
+    /**
+     * @return True if the presently active user is an employer.
+     * @throws IOException If a database error prevented the system from
+     * gathering details about the user.
+     */
     public boolean isUserEmployer() throws IOException
     {
-        User user = getActingUser();
-        if(user == null)
-            return false;
-        
-        return user.getClassifier() == UserClassification.Employer;
+        return getActingUser() instanceof Employer;
     }
 }

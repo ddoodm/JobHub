@@ -1,10 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.deinyon.aip.jobhub.database;
 
+/**
+ * Object-relational mapping utility which is used to differentiate users types
+ * in the database, which is determined by inheritance in business logic.
+ * @author Deinyon Davies <deinyond@gmail.com>
+ */
 public enum UserClassification
 {
     Employee, Employer, Unknown

@@ -1,12 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.deinyon.aip.jobhub.database;
 
-import com.deinyon.aip.jobhub.model.Job;
-import com.deinyon.aip.jobhub.model.JobDescription;
 import com.deinyon.aip.jobhub.model.JobPayload;
 import com.deinyon.aip.jobhub.users.Employee;
 import com.deinyon.aip.jobhub.users.User;
@@ -21,24 +14,56 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * The Data Access Object which accesses and mutates Payload DTOs with the database.
+ * @author Deinyon Davies <deinyond@gmail.com>
+ */
 public class PayloadDAO extends ResourceDAO<UUID, JobPayload>
 {
+    /**
+     * Initializes the DAO using a new database context.
+     * @remarks This DAO opens un-managed network connections, and should be
+     * instantiated within a try-with-resources block, or should be closed
+     * manually after use by calling close().
+     * @throws IOException If a database connection could not be established
+     */
     public PayloadDAO() throws IOException
     {
         super();
     }
     
+    /**
+     * Initializes the DAO using an existing database context
+     * @remarks If this DAO is closed, the underlying connection will also be closed.
+     * @param connection The database connection that should be used by this DAO
+     * to access the database.
+     */
     public PayloadDAO(Connection connection)
     {
         super(connection);
     }
     
+    /**
+     * Utility function which retrieves a User from the User DAO
+     * @param <T> The type of user to retrieve (Employee or Employer)
+     * @param username The username (identifier) of the user to retrieve
+     * @param classifier The class of the type of user to retrieve
+     * @return The user with the specified type and username
+     * @throws IOException If a database error prevented the user from being retrieved.
+     */
     private <T extends User> T loadUser(String username, UserClassification classifier) throws IOException
     {
         // We wish to recycle the current connection, so we do not close the new DAO
         return new UserDAO(connection).findUserOfType(username, classifier);
     }
     
+    /**
+     * Constructs a Payload DTO object from a database table row
+     * @param row A ResultSet which has been initialized to point to a row of Payload
+     * @return A Payload DTO which represents the contents of the row
+     * @throws SQLException If the query failed to execute
+     * @throws IOException If details about the associated user could not be loaded
+     */
     private JobPayload buildPayloadFromRwo(ResultSet row) throws SQLException, IOException
     {
         UUID payloadId = UUID.fromString(row.getString("payload_id"));
@@ -58,6 +83,15 @@ public class PayloadDAO extends ResourceDAO<UUID, JobPayload>
         );
     }
     
+    /**
+     * Substitutes parameters into a query using a 'Substitutor' function, and
+     * returns A collection of Payloads populated by the specified query.
+     * @param query The database query which selects Payloads
+     * @param substitutor The substitutor runnable which substitutes parameters
+     * into the query.
+     * @return The collection of Payloads returned by the query
+     * @throws IOException If a database error prevented the query from executing successfully.
+     */
     private Collection<JobPayload> substituteAndExecuteQuery(String query, StatementSubstitutor substitutor)
             throws IOException
     {
@@ -82,6 +116,13 @@ public class PayloadDAO extends ResourceDAO<UUID, JobPayload>
         }
     }
     
+    /**
+     * Retrieves a collection of Payloads from the database which are associated
+     * with the Job with the specified ID
+     * @param jobId The ID of the job to which the Payloads should be related
+     * @return A collection of payloads which are children of the specified job
+     * @throws IOException If a database error prevented the query from executing successfully.
+     */
     public Collection<JobPayload> getForJob(UUID jobId) throws IOException
     {
         String query = 
@@ -95,6 +136,11 @@ public class PayloadDAO extends ResourceDAO<UUID, JobPayload>
         });
     }
     
+    /**
+     * Inserts a new Job Payload into the database
+     * @param payload The Payload DTO to insert into the database
+     * @throws IOException If a database error prevented the query from executing successfully.
+     */
     @Override
     public void save(JobPayload payload) throws IOException
     {        
@@ -122,6 +168,12 @@ public class PayloadDAO extends ResourceDAO<UUID, JobPayload>
         }
     }
     
+    /**
+     * Removes a payload from the database
+     * @param payload The payload to delete from the database
+     * @return True if the resources was deleted
+     * @throws IOException If a database error prevented the query from executing successfully.
+     */
     @Override
     public boolean delete(JobPayload payload) throws IOException
     {
@@ -144,6 +196,12 @@ public class PayloadDAO extends ResourceDAO<UUID, JobPayload>
         }
     }
     
+    /**
+     * Retrieves the payload with the specified ID
+     * @param id The ID of the payload to retrieve
+     * @return The Payload DTO which denotes the payload with the specified ID
+     * @throws IOException If a database error prevented the query from executing successfully.
+     */
     @Override
     public JobPayload find(UUID id) throws IOException
     {
@@ -161,6 +219,12 @@ public class PayloadDAO extends ResourceDAO<UUID, JobPayload>
         return results.iterator().next();
     }
     
+    /**
+     * Updates an existing payload in the database with the Version and Details
+     * of the specified Payload DTO.
+     * @param payload The payload with which the database should be updated
+     * @throws IOException If a database error prevented the query from executing successfully.
+     */
     @Override
     public void update(JobPayload payload) throws IOException
     {
@@ -183,16 +247,26 @@ public class PayloadDAO extends ResourceDAO<UUID, JobPayload>
         }
     }
 
+    /**
+     * Operation not supported for payloads
+     */
     @Override
     public List<JobPayload> getAll() throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * Operation not supported for payloads
+     */
     @Override
     public int count() throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
+    /**
+     * A runnable which is used to convey a query parameter substitutor method
+     * to a database population function.
+     */
     private interface StatementSubstitutor
     {
         public void run(PreparedStatement preparedStatement) throws SQLException;

@@ -1,16 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.deinyon.aip.jobhub.util;
 
 /**
- *
- * @author Ddoodm
+ * Utility which converts between java.util.Date and java.sql.Date
+ * @author Deinyon Davies <deinyond@gmail.com>
  */
 public class SqlDateConverter
 {
+    /**
+     * Converts a java.sql.Date to a java.util.Date
+     * @param utilDate The java.util.Date to convert
+     * @return The java.sql.Date representation of the Date
+     */
     public static java.sql.Date toSqlDate(java.util.Date utilDate)
     {
         return new java.sql.Date(utilDate.getTime());

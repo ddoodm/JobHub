@@ -9,6 +9,12 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 
+/**
+ * A utility class which was used early in development to simulate a database.
+ * @remarks This utility is no longer used by JobHub. It is not supported, and
+ * so documentation has not been provided.
+ * @author Deinyon Davies <deinyond@gmail.com>
+ */
 public class JobsDatabaseInMemory
 {
     /**

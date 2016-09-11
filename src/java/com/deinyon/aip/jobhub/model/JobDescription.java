@@ -66,6 +66,7 @@ public class JobDescription implements Serializable
     }
 
     @NotEmpty(message = "Please give your job a short description")
+    @Length(min = 3, max = 10000, message = "Please enter a meaningful description below 10,000 characters")
     public String getDetails() {
         return details;
     }
