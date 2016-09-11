@@ -9,7 +9,7 @@
 
     <!-- Select the job with the ID specified in the query string -->
     <f:metadata>
-        <f:viewAction action="#{editJobController.loadJob(param.jobId)}"/>
+        <f:viewAction action="#{jobController.loadJob(param.jobId)}"/>
     </f:metadata>
 
     <f:view>
@@ -30,7 +30,7 @@
                                         id="title"
                                         a:placeholder="Write a title"
                                         styleClass="form-control"
-                                        value="#{editJobController.job.description.title}"/>
+                                        value="#{jobController.job.description.title}"/>
                                 </div>
 
                                 <div class="form-group">
@@ -40,7 +40,7 @@
                                         id="dueDate"
                                         a:placeholder="Write when you want the job done"
                                         styleClass="form-control datepicker"
-                                        value="#{editJobController.job.description.targetEndDate}">
+                                        value="#{jobController.job.description.targetEndDate}">
                                         <f:convertDateTime pattern="d MMMM yyyy" />
                                     </h:inputText>
                                 </div>
@@ -55,7 +55,7 @@
                                             a:placeholder="Write how much you'll pay"
                                             styleClass="form-control"
                                             converter="javax.faces.BigDecimal"
-                                            value="#{editJobController.job.description.payment}"/>
+                                            value="#{jobController.job.description.payment}"/>
                                         <span class="input-group-addon">.00</span>
                                     </div>
                                 </div>
@@ -67,7 +67,7 @@
                                         id="details"
                                         a:placeholder="Write a short description"
                                         styleClass="form-control tall-textarea"
-                                        value="#{editJobController.job.description.details}"/>
+                                        value="#{jobController.job.description.details}"/>
                                 </div>
 
                                 <hr />
@@ -91,7 +91,7 @@
                                     <h:button value="Cancel" outcome="jobs" styleClass="btn btn-default" />
                                     <h:commandButton
                                         value="Publish it!"
-                                        action="#{editJobController.updateJob()}"
+                                        action="#{jobController.updateJob()}"
                                         styleClass="btn btn-primary">
                                     </h:commandButton>
                                 </div>
@@ -103,7 +103,7 @@
             </ui:define>
 
             <ui:define name="scripts">
-                <script type="text/javascript" src="resources/scripts/createEditJobFormHelper.js" />
+                <script type="text/javascript" src="../resources/scripts/createEditJobFormHelper.js" />
             </ui:define>
         </ui:composition>
     </f:view>

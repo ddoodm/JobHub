@@ -1,16 +1,25 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.deinyon.aip.jobhub.controllers;
 
 import java.io.Serializable;
 
+/**
+ * Defines the core functionality of a Controller Bean.
+ * Practically, this abstract class exposes a recyclable instance
+ * of a User Controller to extended Controllers.
+ * @author Deinyon Davies <deinyond@gmail.com>
+ */
 public abstract class GenericController implements Serializable
 {
+    /**
+     * A recycled instance of a User Controller, which may be
+     * used to query information about the presently logged-in user.
+     */
     private UserController userController;
     
+    /**
+     * @return A recycled instance of a User Controller, which may be
+     * used to query information about the presently logged-in user.
+     */
     protected UserController getUserController()
     {
         if(this.userController == null)

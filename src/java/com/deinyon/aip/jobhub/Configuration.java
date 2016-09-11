@@ -1,10 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.deinyon.aip.jobhub;
 
+/**
+ * Static configuration strings which are used throughout the application.
+ * @author Deinyon Davies <deinyond@gmail.com>
+ */
 public class Configuration
 {
     /**

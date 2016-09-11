@@ -7,11 +7,6 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 
-    <f:metadata>
-        <f:viewParam id="classifier" name="classifier" value="#{registerController.userType}"/>
-        <f:event type="preRenderView" listener="#{registerController.initializeUser()}" />
-    </f:metadata>
-
     <f:view>
         <ui:composition template="common.xhtml">
             <ui:define name="content">

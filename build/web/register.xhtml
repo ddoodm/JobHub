@@ -8,8 +8,8 @@
       xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 
     <f:metadata>
-        <f:viewParam id="classifier" name="classifier" value="#{registerController.userType}"/>
-        <f:event type="preRenderView" listener="#{registerController.initializeUser()}" />
+        <f:viewParam name="classifier" value="#{registerController.userType}" />
+        <f:viewAction action="#{registerController.initializeUser(param.classifier)}"/>
     </f:metadata>
 
     <f:view>
@@ -67,14 +67,6 @@
                                 </div>
 
                                 <hr />
-                                <h2>Account Type</h2>
-                                <h:selectOneRadio styleClass="inline-radio-buttons"
-                                                  value="#{registerController.userType}">
-                                    <f:selectItem itemValue="Employee" itemLabel="Employee" />
-                                    <f:selectItem itemValue="Employer" itemLabel="Employer" />
-                                </h:selectOneRadio>
-
-                                <hr />
                                 <h2>Personal Details</h2>
 
                                 <div class="form-group">
@@ -117,6 +109,8 @@
                                         styleClass="form-control"
                                         value="#{registerController.user.company}"/>
                                 </div>
+                                
+                                <h:messages globalOnly="true" />
 
                                 <hr />
 
@@ -126,7 +120,9 @@
                                         id="registerButton"
                                         value="Sign Up"
                                         action="#{registerController.signUp}"
-                                        styleClass="btn btn-primary" />
+                                        styleClass="btn btn-primary">
+                                        <f:param name="classifier" value="#{registerController.userType}" />
+                                    </h:commandButton>
                                 </div>
 
                             </div>

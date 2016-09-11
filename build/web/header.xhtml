@@ -33,8 +33,17 @@
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <ui:fragment rendered="#{empty request.remoteUser}">
-                                <li class="#{view.viewId eq '/register.xhtml' ? 'active' : ''}">
-                                    <h:link outcome="register" >Register</h:link>
+                                <li class="#{view.viewId eq '/register.xhtml?classifier=Employee' ? 'active' : ''}">
+                                    <h:link outcome="register" >
+                                        <f:param name="classifier" value="Employee" />
+                                        Become an Employee
+                                    </h:link>
+                                </li>
+                                <li class="#{view.viewId eq '/register.xhtml?classifier=Employer' ? 'active' : ''}">
+                                    <h:link outcome="register" >
+                                        <f:param name="classifier" value="Employer" />
+                                        Become an Employer
+                                    </h:link>
                                 </li>
                                 <li class="#{view.viewId eq '/login.xhtml' ? 'active' : ''}">
                                     <h:link outcome="login">Log In</h:link>

@@ -27,16 +27,28 @@ public class RegisterController implements Serializable
      */
     private UserClassification userClassifier = UserClassification.Employee;
     
-    public void signUp() throws IOException
+    public String signUp() throws IOException
     {
         try(UserDAO dao = new UserDAO())
         {
             dao.save(user);
         }
+        
+        // Clear the form and redirect to the Log In Facelet
+        return "login";
     }
     
-    public void initializeUser()
+    public void initializeUser(String userType)
     {
+        if(userType != null)
+        {
+            try
+            {
+                userClassifier = UserClassification.valueOf(userType);
+            }
+            catch(Exception ex) { }
+        }
+        
         // Determine the type of the user
         switch(userClassifier)
         {

@@ -15,23 +15,26 @@
                         <div class="container">
                             <h1>Create Jobs, Do Jobs</h1>
                             <p>Welcome to JobHub: the freelance programmer's mini-project job site.</p>
-                            <p>Sign up now as a programmer to find jobs, or as an employer to make them. You'll soon be on your way to writing code, or getting code written!</p>
-                            <hr />
-                            <div class="row">
-                                <div class="col-md-5">
-                                    <h:link value="Become an Employee &raquo;" outcome="register" styleClass="btn btn-lg btn-primary center-block">
-                                        <f:param name="classifier" value="Employee"/>
-                                    </h:link>
+
+                            <ui:fragment rendered="#{empty request.remoteUser}">
+                                <p>Sign up now as a programmer to find jobs, or as an employer to make them. You'll soon be on your way to writing code, or getting code written!</p>
+                                <hr />
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <h:link value="Become an Employee &raquo;" outcome="register" styleClass="btn btn-lg btn-primary center-block">
+                                            <f:param name="classifier" value="Employee"/>
+                                        </h:link>
+                                    </div>
+                                    <div class="col-md-2 mid-fade-text">
+                                        <p>OR</p>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <h:link value="Become an Employer &raquo;" outcome="register" styleClass="btn btn-lg btn-primary center-block">
+                                            <f:param name="classifier" value="Employer"/>
+                                        </h:link>
+                                    </div>
                                 </div>
-                                <div class="col-md-2 mid-fade-text">
-                                    <p>OR</p>
-                                </div>
-                                <div class="col-md-5">
-                                    <h:link value="Become an Employer &raquo;" outcome="register" styleClass="btn btn-lg btn-primary center-block">
-                                        <f:param name="classifier" value="Employer"/>
-                                    </h:link>
-                                </div>
-                            </div>
+                            </ui:fragment>
                         </div>
                     </div>
                 </div>
