@@ -55,21 +55,6 @@
                     styleClass="form-control tall-textarea"
                     value="#{jobController.job.description.details}"/>
             </div>
-
-            <hr />
-
-            <div class="form-group">
-                <h:outputLabel value="Attach a File" />
-                <p>You can optionally attach a file to provide to your contractor.</p>
-                <div class="input-group">
-                    <label class="input-group-btn">
-                        <span class="btn btn-primary">
-                            Browse <h:inputFile value="#{jobController.attachment}" id="uploadFile" style="display: none;" />
-                        </span>
-                    </label>
-                    <input type="text" id="uploadFileFeedback" class="form-control" readonly="" />
-                </div>
-            </div>
         </ui:composition>
     </f:view>
 </html>

@@ -84,7 +84,7 @@ public class Job implements Serializable
     /**
      * Called when the job's details have been written,
      * and before the job is inserted into a database.
-     * Write additional properties to the job.
+     * Writes additional properties to the job.
      */
     public void prepare()
     {
