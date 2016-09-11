@@ -5,7 +5,8 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <!-- Select the job with the ID specified in the query string -->
     <f:metadata>
@@ -95,11 +96,77 @@
                                     </div>
 
                                     <ui:fragment rendered="#{jobController.approvable}">
+                                        <!-- The 'Take Job' button is available to any employee -->
                                         <hr />
                                         <h:commandButton
                                             action="#{jobController.takeJob}"
                                             styleClass="btn-lg btn-primary center-block"
-                                            value="Take the Job" />
+                                            value="Take the Job"
+                                            immediate="true" />
+                                    </ui:fragment>
+
+                                    <ui:fragment rendered="#{userController.userEmployee and jobController.jobTakenByOtherEmployee}">
+                                        <!-- The 'taken' disabled-button is shown to all employees for all jobs that are not approvable -->
+                                        <hr />
+                                        <h:commandButton
+                                            styleClass="btn btn-lg disabled center-block"
+                                            value="This Job is Taken"
+                                            disabled="true"/>
+                                    </ui:fragment>
+
+                                    <ui:fragment rendered="#{jobController.userCanSeePayloads}">
+                                        <hr />
+                                        <h2>Payloads</h2>
+
+                                        <ui:fragment rendered="#{jobController.job.payloadsEmpty}">
+                                            <p>This job is approved, but has had no responses... yet. Hang in there!</p>
+                                        </ui:fragment>
+
+                                        <ui:fragment rendered="#{!jobController.job.payloadsEmpty}">
+                                            <p>
+                                                <h:outputText value="#{jobController.job.employee.displayName}" />
+                                                has made contributions to this job.
+                                            </p>
+                                            <div class="well-lg">
+                                                <c:forEach var="payload" items="#{jobController.job.payloads}">
+                                                    <hr />
+                                                    <div class="row">
+                                                        <div class="col-md-9">
+                                                            <table class="table payload-table">
+                                                                <tr>
+                                                                    <th width="100">Posted</th>
+                                                                    <td>
+                                                                        <h:outputText value="#{payload.submissionDate}">
+                                                                            <f:convertDateTime dateStyle="full" />
+                                                                        </h:outputText>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th width="100">Details</th>
+                                                                    <td><h:outputText value="#{payload.details}" /></td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <ui:fragment rendered="#{payload.isUserAuthorOfPayload(userController.actingUser)}">
+                                                                <p class="pull-right">
+                                                                    <h:commandLink
+                                                                        action="#{payloadController.delete(payload, jobController.job)}"
+                                                                        immediate="true">
+                                                                        Delete
+                                                                    </h:commandLink>
+                                                                    |
+                                                                    <h:link outcome="editPayload">
+                                                                        <f:param name="payloadId" value="#{payload.id}"/>
+                                                                        Edit
+                                                                    </h:link>
+                                                                </p>
+                                                            </ui:fragment>
+                                                        </div>
+                                                    </div>
+                                                </c:forEach>
+                                            </div>
+                                        </ui:fragment>
                                     </ui:fragment>
 
                                     <ui:fragment rendered="#{jobController.userCanPostPayloads}">
@@ -116,15 +183,26 @@
                                                     id="details"
                                                     a:placeholder="Write details about your payload"
                                                     styleClass="form-control"
-                                                    />
+                                                    value="#{payloadController.newPayload.details}"/>
                                             </div>
                                             <div class="btn-toolbar">
                                                 <h:commandButton
                                                     value="Post it!"
-                                                    
+                                                    action="#{payloadController.postPayload(jobController.job)}"
                                                     styleClass="btn btn-primary pull-right" />
                                             </div>
                                         </div>
+                                    </ui:fragment>
+                                    
+                                    <ui:fragment rendered="#{jobController.userPermittedToCloseJob}">
+                                        <!-- The button which closes the job is shown when the job is currently Accepted,
+                                        but only to the Employer who listed the job.-->
+                                        <hr />
+                                        <h:commandButton
+                                            action="#{jobController.closeJob}"
+                                            styleClass="btn-lg btn-primary center-block"
+                                            value="Close this Job"
+                                            immediate="true" />
                                     </ui:fragment>
 
                                 </div>

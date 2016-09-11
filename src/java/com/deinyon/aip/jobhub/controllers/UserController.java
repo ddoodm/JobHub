@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestScoped
 public class UserController
 {
-    private User cachedUser;
+    private static User cachedUser;
     
     public User getActingUser() throws IOException
     {

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+    <!-- Select the job with the ID specified in the query string -->
+    <f:metadata>
+        <f:viewAction action="#{editPayloadController.loadPayload(param.payloadId)}"/>
+    </f:metadata>
+
+    <f:view>
+        <ui:composition template="/common.xhtml">
+            <ui:define name="content">
+
+                <div class="container">
+                    <h:form id="editPayloadForm" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-8">
+                                <div class="well">
+                                    <h4>Edit your Payload</h4>
+                                    <p>Here, you can modify a payload you have already posted.</p>
+                                    <hr />
+
+                                    <div class="form-group">
+                                        <h:outputLabel value="Details" styleClass="pull-left" />
+                                        <h:message for="details"  styleClass="pull-right error" />
+                                        <h:inputTextarea
+                                            id="details"
+                                            a:placeholder="Write details about your payload"
+                                            styleClass="form-control"
+                                            value="#{editPayloadController.payload.details}"/>
+                                    </div>
+                                    <div class="btn-toolbar">
+                                        <h:button value="Cancel" outcome="job" styleClass="btn btn-default">
+                                            <f:param name="jobId" value="#{editPayloadController.payload.jobId}"/>
+                                        </h:button>
+                                        <h:commandButton
+                                            value="Fix it!"
+                                            action="#{editPayloadController.updatePayload}"
+                                            styleClass="btn btn-primary pull-right" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2"></div>
+                        </div>
+                    </h:form>
+                </div>
+
+            </ui:define>
+        </ui:composition>
+    </f:view>
+</html>

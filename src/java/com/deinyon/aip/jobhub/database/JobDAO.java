@@ -216,21 +216,28 @@ public class JobDAO extends ResourceDAO<UUID, Job>
     @Override
     public List<Job> getAll() throws IOException
     {
+        // The query selects all jobs that are not closed, and joins each with its associated Job Description
         String query =
                 "SELECT job_id, Jobs.description_id AS description_id, employer_id, employee_id, state, title, details, payment, listing_date, end_date " +
                 "FROM Jobs " +
                 "INNER JOIN JobDescriptions " +
-                "ON Jobs.description_id = JobDescriptions.description_id ";
+                "ON Jobs.description_id = JobDescriptions.description_id " +
+                "WHERE state <> ?";
         
-        try(Statement statement = connection.createStatement();
-            ResultSet results = statement.executeQuery(query))
+        try(PreparedStatement statement = connection.prepareStatement(query))
         {
-            List<Job> jobList = new ArrayList<>();
+            // Set the name of the 'Closed' state
+            statement.setString(1, JobStatus.Closed.name());
             
-            while(results.next())
-                jobList.add(buildJobFromRow(results));
-            
-            return jobList;
+            try(ResultSet results = statement.executeQuery())
+            {
+                List<Job> jobList = new ArrayList<>();
+
+                while(results.next())
+                    jobList.add(buildJobFromRow(results));
+
+                return jobList;
+            }
         }
         catch(Exception ex)
         {
@@ -292,14 +299,18 @@ public class JobDAO extends ResourceDAO<UUID, Job>
     @Override
     public int count() throws IOException
     {
-        String query = "SELECT count(1) FROM Jobs";
+        String query = "SELECT count(1) FROM Jobs WHERE Jobs.state <> ?";
         
-        try(Statement statement = connection.createStatement();
-            ResultSet results = statement.executeQuery(query))
+        try(PreparedStatement statement = connection.prepareStatement(query))
         {
-            if(!results.next())
-                return 0;
-            return results.getInt(1);
+            statement.setString(1, JobStatus.Closed.name());
+            
+            try(ResultSet results = statement.executeQuery())
+            {
+                if(!results.next())
+                    return 0;
+                return results.getInt(1);
+            }
         }
         catch(Exception ex)
         {

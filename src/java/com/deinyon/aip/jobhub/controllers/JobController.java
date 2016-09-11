@@ -10,36 +10,21 @@ import com.deinyon.aip.jobhub.database.JobDAO;
 import com.deinyon.aip.jobhub.users.Employee;
 import com.deinyon.aip.jobhub.users.Employer;
 import com.deinyon.aip.jobhub.users.User;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.Map;
 import java.util.UUID;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
+import javax.faces.bean.SessionScoped;
 import javax.servlet.http.Part;
 
-@RequestScoped
+@SessionScoped
 @ManagedBean(name = "jobController")
-public class JobController implements Serializable
+public class JobController extends GenericController
 {
     private Job job;
-    private UserController userController;
     
     public Job getJob()
     {
         return this.job;
-    }
-    
-    private UserController getUserController()
-    {
-        if(this.userController == null)
-            return this.userController = new UserController();
-        return this.userController;
     }
     
     /**
@@ -125,6 +110,23 @@ public class JobController implements Serializable
         return "jobs";
     }
     
+    public void takeJob() throws IOException
+    {
+        // Here, we take the current user, and assign them to the job
+        Employee currentUser = new UserController().<Employee>getActingUserTyped();
+        job.delegateTo(currentUser);
+        updateJob();
+    }
+    
+    public String closeJob() throws IOException
+    {
+        // We do not delete the job from the database; we close it
+        job.close();
+        updateJob();
+        
+        return "jobs";
+    }
+    
     /**
      * @return True if this job listing could possibly be approved by the current user. False otherwise.
      * @throws java.io.IOException
@@ -137,14 +139,25 @@ public class JobController implements Serializable
     
     public boolean isUserCanPostPayloads() throws IOException
     {
-        return job.canUserPostPayloads(getUserController().getActingUser());
+        User actingUser = getUserController().getActingUser();
+        return job.canUserPostPayloads(actingUser);
     }
     
-    public void takeJob() throws IOException
+    public boolean isUserCanSeePayloads() throws IOException
     {
-        // Here, we take the current user, and assign them to the job
-        Employee currentUser = new UserController().<Employee>getActingUserTyped();
-        job.delegateTo(currentUser);
-        updateJob();
+        User actingUser = getUserController().getActingUser();
+        return job.canUserSeePayloads(actingUser);
+    }
+    
+    public boolean isJobTakenByOtherEmployee() throws IOException
+    {
+        User actingUser = getUserController().getActingUser();
+        return job.isJobTakenByOtherEmployee(actingUser);
+    }
+    
+    public boolean isUserPermittedToCloseJob() throws IOException
+    {
+        User actingUser = getUserController().getActingUser();
+        return job.isUserPermittedToCloseJob(actingUser);
     }
 }

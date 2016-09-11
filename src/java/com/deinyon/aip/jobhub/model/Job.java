@@ -59,6 +59,11 @@ public class Job implements Serializable
         this.status = JobStatus.Approved;
     }
     
+    public void close()
+    {
+        this.status = JobStatus.Closed;
+    }
+    
     public String getStatusMessage()
     {
         switch(status)
@@ -139,5 +144,59 @@ public class Job implements Serializable
         
         // The user may post payloads if they accepted the job
         return this.employee.equals(actingUser);
+    }
+
+    public boolean canUserSeePayloads(User actingUser)
+    {
+        // A proposed job cannot have payloads
+        if(this.status == JobStatus.Proposed)
+            return false;
+        
+        // Payloads are shared between the Employee and Employer only
+        return this.employee.equals(actingUser) || this.employer.equals(actingUser);
+    }
+    
+    public boolean isJobTakenByOtherEmployee(User actingUser)
+    {
+        // If this job is proposed, it is not taken by anyone
+        if(this.status == JobStatus.Proposed)
+            return false;
+        
+        // If the user is not an employee, we cannot make the comparison
+        if(!(actingUser instanceof Employee))
+            return false;
+        
+        // If the acting user is not the job's employee, the job is taken by another employee
+        return !this.employee.equals(actingUser);
+    }
+    
+    public boolean isUserPermittedToCloseJob(User actingUser)
+    {
+        // Only the Employer who listed the job is permitted to close it,
+        // but only if it is currently approved
+        if(this.status != JobStatus.Approved)
+            return false;
+        
+        return this.employer.equals(actingUser);
+    }
+    
+    public boolean isPayloadsEmpty()
+    {
+        return this.payloads == null || this.payloads.size() < 1;
+    }
+
+    public void addPayload(JobPayload newPayload)
+    {
+        this.payloads.add(newPayload);
+    }
+    
+    public void removePayload(JobPayload payload)
+    {
+        this.payloads.remove(payload);
+    }
+    
+    public Collection<JobPayload> getPayloads()
+    {
+        return this.payloads;
     }
 }

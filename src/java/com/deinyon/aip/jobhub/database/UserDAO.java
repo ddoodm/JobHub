@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -147,8 +148,8 @@ public class UserDAO extends ResourceDAO<String, User>
     public void save(User user) throws IOException
     {
         String query =
-                "INSERT INTO Users (user_id, classifier, password, first_name, last_name, email, biography) VALUES " +
-                "( ?,?,?,?,?,?,? )";
+                "INSERT INTO Users (user_id, classifier, password, first_name, last_name, email, biography, company) VALUES " +
+                "( ?,?,?,?,?,?,?,?)";
         
         try(PreparedStatement preparedStatement = connection.prepareStatement(query))
         {
@@ -160,6 +161,12 @@ public class UserDAO extends ResourceDAO<String, User>
             preparedStatement.setString(5, user.getSurname());
             preparedStatement.setString(6, user.getEmail());
             preparedStatement.setString(7, user.getBio());
+            
+            // If the company name has been specified, set it
+            if(user.getCompany() != null)
+                preparedStatement.setString(8, user.getCompany());
+            else
+                preparedStatement.setNull(8, Types.VARCHAR);
             
             // Execute the query
             preparedStatement.executeUpdate();

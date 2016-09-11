@@ -52,6 +52,7 @@
             <web-resource-name>viewJobPages</web-resource-name>
             <url-pattern>/jobs/job.xhtml</url-pattern>
             <url-pattern>/jobs/list.xhtml</url-pattern>
+            <url-pattern>/jobs/editPayload.xhtml</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>Employer</role-name>

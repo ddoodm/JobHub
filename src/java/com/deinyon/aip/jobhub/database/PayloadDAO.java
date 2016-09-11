@@ -8,6 +8,8 @@ package com.deinyon.aip.jobhub.database;
 import com.deinyon.aip.jobhub.model.Job;
 import com.deinyon.aip.jobhub.model.JobDescription;
 import com.deinyon.aip.jobhub.model.JobPayload;
+import com.deinyon.aip.jobhub.users.Employee;
+import com.deinyon.aip.jobhub.users.User;
 import com.deinyon.aip.jobhub.util.SqlDateConverter;
 import java.io.IOException;
 import java.sql.Connection;
@@ -31,31 +33,38 @@ public class PayloadDAO extends ResourceDAO<UUID, JobPayload>
         super(connection);
     }
     
-    private JobPayload buildPayloadFromRwo(ResultSet row) throws SQLException
+    private <T extends User> T loadUser(String username, UserClassification classifier) throws IOException
+    {
+        // We wish to recycle the current connection, so we do not close the new DAO
+        return new UserDAO(connection).findUserOfType(username, classifier);
+    }
+    
+    private JobPayload buildPayloadFromRwo(ResultSet row) throws SQLException, IOException
     {
         UUID payloadId = UUID.fromString(row.getString("payload_id"));
         UUID jobId = UUID.fromString(row.getString("job_id"));
+        String authorId = row.getString("author_id");
+        
+        // Here, we load the author entirely
+        Employee author = loadUser(authorId, UserClassification.Employee);
         
         return new JobPayload(
                 payloadId,
                 jobId,
+                author,
                 row.getInt("version"),
                 row.getString("details"),
                 row.getDate("submission_date")
         );
     }
     
-    public Collection<JobPayload> getForJob(UUID jobId) throws IOException
+    private Collection<JobPayload> substituteAndExecuteQuery(String query, StatementSubstitutor substitutor)
+            throws IOException
     {
-        String query = 
-                "SELECT payload_id, job_id, version, details, submission_date, attachment_id " +
-                "FROM JobPayloads " +
-                "WHERE job_id=?";
-        
         try(PreparedStatement preparedStatement = connection.prepareStatement(query))
         {
             // Substitute query parameters
-            preparedStatement.setString(1, jobId.toString());
+            substitutor.run(preparedStatement);
 
             // Execute the query
             ResultSet results = preparedStatement.executeQuery();
@@ -73,17 +82,26 @@ public class PayloadDAO extends ResourceDAO<UUID, JobPayload>
         }
     }
     
+    public Collection<JobPayload> getForJob(UUID jobId) throws IOException
+    {
+        String query = 
+                "SELECT payload_id, job_id, version, details, submission_date, attachment_id, author_id " +
+                "FROM JobPayloads " +
+                "WHERE job_id=?";
+        
+        return substituteAndExecuteQuery(query, (PreparedStatement preparedStatement) -> 
+        {
+            preparedStatement.setString(1, jobId.toString());
+        });
+    }
+    
     @Override
     public void save(JobPayload payload) throws IOException
-    {
-        // First, we assign the payload a new UUID if it does not already have one
-        if(payload.getId() == null)
-            payload.setId(UUID.randomUUID());
-        
+    {        
         // The query inserts a new Payload record
         String query = 
-                "INSERT INTO JobPayloads (payload_id, job_id, version, details, submission_date) " +
-                "VALUES (?,?,?,?,?)";
+                "INSERT INTO JobPayloads (payload_id, job_id, version, details, submission_date, author_id) " +
+                "VALUES (?,?,?,?,?,?)";
         
         try(PreparedStatement preparedStatement = connection.prepareStatement(query))
         {
@@ -93,6 +111,7 @@ public class PayloadDAO extends ResourceDAO<UUID, JobPayload>
             preparedStatement.setInt(3, payload.getVersion());
             preparedStatement.setString(4, payload.getDetails());
             preparedStatement.setDate(5, SqlDateConverter.toSqlDate(payload.getSubmissionDate()));
+            preparedStatement.setString(6, payload.getAuthor().getUsername());
             
             // Execute the query
             preparedStatement.executeUpdate();
@@ -104,8 +123,64 @@ public class PayloadDAO extends ResourceDAO<UUID, JobPayload>
     }
     
     @Override
-    public JobPayload find(UUID id) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean delete(JobPayload payload) throws IOException
+    {
+        String query =
+                "DELETE FROM JobPayloads " +
+                "WHERE payload_id = ?";
+        
+        try(PreparedStatement preparedStatement = connection.prepareStatement(query))
+        {
+            // Substitute query parameters
+            preparedStatement.setString(1, payload.getId().toString());
+
+            // Execute the query
+            int affectedRows = preparedStatement.executeUpdate();
+            return affectedRows > 0;
+        }
+        catch(Exception ex)
+        {
+            throw new IOException("Could not delete the specified resource", ex);
+        }
+    }
+    
+    @Override
+    public JobPayload find(UUID id) throws IOException
+    {
+        String query = 
+                "SELECT payload_id, job_id, version, details, submission_date, attachment_id, author_id " +
+                "FROM JobPayloads " +
+                "WHERE payload_id=?";
+        
+        Collection<JobPayload> results = substituteAndExecuteQuery(query, (PreparedStatement preparedStatement) -> 
+        {
+            preparedStatement.setString(1, id.toString());
+        });
+        
+        // Returns the first (and hopefully only) element
+        return results.iterator().next();
+    }
+    
+    @Override
+    public void update(JobPayload payload) throws IOException
+    {
+        String query =
+                "UPDATE JobPayloads " +
+                "SET version=?, details=? " +
+                "WHERE payload_id=?";
+        
+        try(PreparedStatement preparedStatement = connection.prepareStatement(query))
+        {
+            preparedStatement.setInt(1, payload.getVersion());
+            preparedStatement.setString(2, payload.getDetails());
+            preparedStatement.setString(3, payload.getId().toString());
+            
+            preparedStatement.executeUpdate();
+        }
+        catch(SQLException ex)
+        {
+            throw new IOException("Could not update the specified resource.");
+        }
     }
 
     @Override
@@ -114,17 +189,12 @@ public class PayloadDAO extends ResourceDAO<UUID, JobPayload>
     }
 
     @Override
-    public boolean delete(JobPayload resource) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void update(JobPayload resource) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public int count() throws IOException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    private interface StatementSubstitutor
+    {
+        public void run(PreparedStatement preparedStatement) throws SQLException;
     }
 }

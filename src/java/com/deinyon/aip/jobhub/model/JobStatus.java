@@ -6,5 +6,5 @@
 package com.deinyon.aip.jobhub.model;
 
 public enum JobStatus {
-    Proposed, Approved, Completed, Cancelled
+    Proposed, Approved, Completed, Closed
 }

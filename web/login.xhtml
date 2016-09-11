@@ -29,6 +29,7 @@
 
                                         <div class="form-group">
                                             <h:outputLabel value="Username" styleClass="pull-left" />
+                                            <h:message for="username" styleClass="error pull-right" />
                                             <h:inputText
                                                 id="username"
                                                 a:placeholder="Write your username"
@@ -37,12 +38,16 @@
                                         </div>
                                         <div class="form-group">
                                             <h:outputLabel value="Password" styleClass="pull-left" />
+                                            <h:message for="password" styleClass="error pull-right" />
                                             <h:inputSecret
                                                 id="password"
                                                 a:placeholder="Write your password"
                                                 styleClass="form-control"
                                                 value="#{loginController.password}"/>
                                         </div>
+                                        <p class="pull-left">
+                                            <h:messages globalOnly="true" styleClass="error error-message-list" />
+                                        </p>
                                         <div class="btn-toolbar pull-right">
                                             <h:button value="Cancel" outcome="home" styleClass="btn btn-default" />
                                             <h:commandButton

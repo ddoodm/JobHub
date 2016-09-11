@@ -10,6 +10,7 @@ import javax.faces.bean.*;
 import javax.faces.context.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import org.hibernate.validator.constraints.NotEmpty;
 
 @ManagedBean(name = "loginController")
 @RequestScoped
@@ -28,13 +29,15 @@ public class LoginController
         }
         catch (ServletException e)
         {
-            System.out.println(e);
+            // Report to the user that the login attempt failed
+            context.addMessage(null, new FacesMessage("That username or password was incorrect. Try again."));
             return null;
         }
         
         return "jobs";
     }
 
+    @NotEmpty(message = "Enter your username")
     public String getUsername()
     {
         return username;
@@ -45,6 +48,7 @@ public class LoginController
         this.username = username;
     }
 
+    @NotEmpty(message = "Enter your password")
     public String getPassword()
     {
         return plaintextPassword;
